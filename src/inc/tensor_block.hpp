@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace mymex {
+namespace eigen2mat {
      template <typename tensor_t>
      class tensor_block_t
      {
@@ -50,6 +50,6 @@ namespace mymex {
 	  const iterator begin_;
 	  const iterator end_;
      };
-} // namespace mymex
+} // namespace eigen2mat
 
 #endif /* TENSOR_BLOCK_HPP_INCLUDED */

@@ -4,8 +4,8 @@
 #include "definitions.hpp"
 #include "include_mex"
 
-namespace mymex {
-     // MATLAB to mymex
+namespace eigen2mat {
+     // MATLAB to eigen2mat
      bool mxArray_to_bool(const mxArray* b);
      double mxArray_to_double(const mxArray* d);
      size_t mxArray_to_idx(const mxArray* d);
@@ -29,7 +29,7 @@ namespace mymex {
      cmplx_tensor_t mxArray_to_cmplx_tensor(const mxArray* m);
      cmplx_sp_cell_t mxArray_to_cmplx_sp_cell(const mxArray* c);
 
-     // mymex to MATLAB
+     // eigen2mat to MATLAB
      mxArray* to_mxArray(bool b);
      mxArray* to_mxArray(double d);
      mxArray* to_mxArray(int i);
@@ -55,6 +55,6 @@ namespace mymex {
      
      // others
      dim_array_t get_dimensions(const mxArray* a);
-} // namespace mymex
+} // namespace eigen2mat
 
 #endif /* CONVERSION_HPP_INCLUDED */

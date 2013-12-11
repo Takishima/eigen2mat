@@ -3,7 +3,7 @@
 
 #include "definitions.hpp"
 
-namespace mymex {
+namespace eigen2mat {
      enum DIR_T {X, Y, Z};
 
      real_matrix_t tensor_to_matrix(const real_tensor_t& t, 
@@ -49,6 +49,6 @@ namespace mymex {
      void tensor_slice_assign(cmplx_tensor_t& t_lhs, DIR_T dim_lhs, size_t idx_lhs,
 			      const cmplx_matrix_t& m_rhs);
 
-} // namespace mymex
+} // namespace eigen2mat
 
 #endif /* TENSOR_TO_MATRIX_HPP_INCLUDED */

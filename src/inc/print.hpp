@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace mymex {
+namespace eigen2mat {
      void print(const char* s);
      void print(const std::string& s);
 
@@ -30,6 +30,6 @@ namespace mymex {
      void print(const cmplx_sp_matrix_t& m);
      void print(const cmplx_tensor_t& m);
      void print(const cmplx_sp_cell_t& m);
-} // namespace mymex
+} // namespace eigen2mat
 
 #endif /* PRINT_HPP_INCLUDED */

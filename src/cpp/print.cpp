@@ -3,6 +3,7 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wsign-compare"
+#pragma clang diagnostic ignored "-Wsign-conversion"
 
 /*
   void print(double d);
@@ -14,47 +15,47 @@
 
 */
 
-void mymex::print(const char* s)
+void eigen2mat::print(const char* s)
 {
      mexPrintf("%s\n", s);
 }
 
-void mymex::print(const std::string& s)
+void eigen2mat::print(const std::string& s)
 {
      mexPrintf("%s\n", s.c_str());
 }
 
 // =============================================================================
 
-void mymex::print(double d) 
+void eigen2mat::print(double d) 
 {
      mexPrintf("%g\n", d);
 }
 
 // =====================================
 
-void mymex::print(int i) 
+void eigen2mat::print(int i) 
 {
      mexPrintf("%d\n", i);
 }
 
 // =====================================
 
-void mymex::print(size_t idx) 
+void eigen2mat::print(size_t idx) 
 {
      mexPrintf("%d\n", idx);
 }
 
 // =====================================
 
-void mymex::print(const dcomplex& z)
+void eigen2mat::print(const dcomplex& z)
 {
      mexPrintf("%g + %gi ", z.real(), z.imag());
 }
 
 // =============================================================================
 
-void mymex::print(const idx_array_t& v)
+void eigen2mat::print(const idx_array_t& v)
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  mexPrintf("%d ", v[i]);
@@ -64,7 +65,7 @@ void mymex::print(const idx_array_t& v)
 
 // =====================================
 
-void mymex::print(const int_array_t& v)
+void eigen2mat::print(const int_array_t& v)
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  mexPrintf("%d ", v[i]);
@@ -74,7 +75,7 @@ void mymex::print(const int_array_t& v)
 
 // =============================================================================
 
-void mymex::print(const real_vector_t& v) 
+void eigen2mat::print(const real_vector_t& v) 
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  mexPrintf("%g\n", v(i));
@@ -83,7 +84,7 @@ void mymex::print(const real_vector_t& v)
 
 // =====================================
 
-void mymex::print(const real_row_vector_t& v)
+void eigen2mat::print(const real_row_vector_t& v)
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  mexPrintf("%g ", v(i));
@@ -93,7 +94,7 @@ void mymex::print(const real_row_vector_t& v)
 
 // =====================================
 
-void mymex::print(const real_matrix_t& m) 
+void eigen2mat::print(const real_matrix_t& m) 
 {
      for (auto i(0UL); i < m.rows(); ++i) {
 	  for (auto j(0UL); j < m.cols(); ++j) {
@@ -106,7 +107,7 @@ void mymex::print(const real_matrix_t& m)
 
 // =====================================
 
-void mymex::print(const real_sp_matrix_t& m) 
+void eigen2mat::print(const real_sp_matrix_t& m) 
 {
      for (auto k(0); k < m.outerSize(); ++k) {
 	  for (real_sp_matrix_t::InnerIterator it(m,k); it; ++it) {
@@ -117,7 +118,7 @@ void mymex::print(const real_sp_matrix_t& m)
 
 // =====================================
 
-void mymex::print(const real_tensor_t& t) 
+void eigen2mat::print(const real_tensor_t& t) 
 {
      for (auto i(0UL); i < t.size(); ++i) {
 	  mexPrintf("t(:,:,%d):\n", i);
@@ -127,7 +128,7 @@ void mymex::print(const real_tensor_t& t)
 
 // =====================================
 
-void mymex::print(const real_sp_cell_t& c)
+void eigen2mat::print(const real_sp_cell_t& c)
 {
      for (auto i(0UL); i < c.size(); ++i) {
 	  mexPrintf("c{%d}:\n", i);
@@ -137,7 +138,7 @@ void mymex::print(const real_sp_cell_t& c)
 
 // =============================================================================
 
-void mymex::print(const cmplx_vector_t& v) 
+void eigen2mat::print(const cmplx_vector_t& v) 
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  print(v(i));
@@ -147,7 +148,7 @@ void mymex::print(const cmplx_vector_t& v)
 
 // =====================================
 
-void mymex::print(const cmplx_row_vector_t& v)
+void eigen2mat::print(const cmplx_row_vector_t& v)
 {
      for (auto i(0UL); i < v.size(); ++i) {
 	  print(v(i));
@@ -157,7 +158,7 @@ void mymex::print(const cmplx_row_vector_t& v)
 
 // =====================================
 
-void mymex::print(const cmplx_matrix_t& m) 
+void eigen2mat::print(const cmplx_matrix_t& m) 
 {
      for (auto i(0UL); i < m.rows(); ++i) {
 	  for (auto j(0UL); j < m.cols(); ++j) {
@@ -170,7 +171,7 @@ void mymex::print(const cmplx_matrix_t& m)
 
 // =====================================
 
-void mymex::print(const cmplx_sp_matrix_t& m) 
+void eigen2mat::print(const cmplx_sp_matrix_t& m) 
 {
      for (auto k(0); k < m.outerSize(); ++k) {
 	  for (cmplx_sp_matrix_t::InnerIterator it(m,k); it; ++it) {
@@ -183,7 +184,7 @@ void mymex::print(const cmplx_sp_matrix_t& m)
 
 // =====================================
 
-void mymex::print(const cmplx_tensor_t& t) 
+void eigen2mat::print(const cmplx_tensor_t& t) 
 {
      for (auto i(0UL); i < t.size(); ++i) {
 	  mexPrintf("t(:,:,%d):\n", i);
@@ -194,7 +195,7 @@ void mymex::print(const cmplx_tensor_t& t)
 
 // =====================================
 
-void mymex::print(const cmplx_sp_cell_t& c)
+void eigen2mat::print(const cmplx_sp_cell_t& c)
 {
      for (auto i(0UL); i < c.size(); ++i) {
 	  mexPrintf("c{%d}:\n", i);

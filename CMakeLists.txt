@@ -74,8 +74,8 @@ IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE RELEASE CACHE STRING
       "Choose the type of build, options are: None, Debug, Release (default)."
       FORCE)
-    message(STATUS "Setting build type to: ${CMAKE_BUILD_TYPE}")
 ENDIF(NOT CMAKE_BUILD_TYPE)
+message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
 # ======================================
 

@@ -12,5 +12,5 @@
 *.la
 *.a
 
-# CMake build directory
-build
+# CMake build directories
+build*

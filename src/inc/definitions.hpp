@@ -23,7 +23,7 @@
 #include <complex>
 #include <vector>
 
-namespace mymex {
+namespace eigen2mat {
      // Scalars
      typedef std::size_t size_t;
      typedef std::complex<double> dcomplex;
@@ -86,6 +86,6 @@ namespace mymex {
      typedef Eigen::Map<cmplx_vector_t> cmplx_map_vec_t;
      typedef Eigen::Map<real_matrix_t> real_map_mat_t;
      typedef Eigen::Map<cmplx_matrix_t> cmplx_map_mat_t;
-} // namespace mymex
+} // namespace eigen2mat
 
 #endif //DEFINITIONS_HPP_INCLUDED

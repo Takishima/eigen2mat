@@ -7,7 +7,9 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundefined-reinterpret-cast"
 #pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wsign-conversion"
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+
 template <typename T>
 T mxArray_to_single_helper(const mxArray* a)
 {
@@ -64,7 +66,7 @@ T mxArray_to_single_helper(const mxArray* a)
 // Copy SIZE elements from a to dest
 template <typename pointer_t>
 void copy_from_mxArray_helper(const mxArray* a, 
-			      mymex::size_t SIZE, 
+			      eigen2mat::size_t SIZE, 
 			      pointer_t dest)
 {
      mxClassID id = mxGetClassID(a);
@@ -124,16 +126,15 @@ mxArray* to_1Dcell_array_helper(const cell_array_t& t)
      auto ret = mxCreateCellArray(1, dims);
      for (auto i(0UL) ; i < dims[0] ; ++i) {
 	  // mxSetCell(mxArray *pm, mwIndex index, mxArray *value);
-	  mxSetCell(ret, i, mymex::to_mxArray(t[i]));
+	  mxSetCell(ret, i, eigen2mat::to_mxArray(t[i]));
      }
      return ret;
 }
 
-#pragma clang diagnostic pop
 
 // =============================================================================
 
-bool mymex::mxArray_to_bool(const mxArray* b)
+bool eigen2mat::mxArray_to_bool(const mxArray* b)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxIsComplex(b)) {
@@ -152,7 +153,7 @@ bool mymex::mxArray_to_bool(const mxArray* b)
 
 // =====================================
 
-double mymex::mxArray_to_double(const mxArray* d)
+double eigen2mat::mxArray_to_double(const mxArray* d)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxIsComplex(d)) {
@@ -171,7 +172,7 @@ double mymex::mxArray_to_double(const mxArray* d)
 
 // =====================================
 
-size_t mymex::mxArray_to_idx(const mxArray* d)
+size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 {
 #ifdef MYMEX_TYPE_CHECK     
      const auto M = mxGetM(d);
@@ -201,7 +202,7 @@ size_t mymex::mxArray_to_idx(const mxArray* d)
 
 // =====================================
 
-int mymex::mxArray_to_int(const mxArray* d)
+int eigen2mat::mxArray_to_int(const mxArray* d)
 {
 #ifdef MYMEX_TYPE_CHECK     
      const auto M = mxGetM(d);
@@ -231,7 +232,7 @@ int mymex::mxArray_to_int(const mxArray* d)
      return mxArray_to_single_helper<int>(d);
 }
 
-mymex::dcomplex mymex::mxArray_to_cmplx(const mxArray* d)
+eigen2mat::dcomplex eigen2mat::mxArray_to_cmplx(const mxArray* d)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (!mxIsComplex(d)) {
@@ -248,10 +249,7 @@ mymex::dcomplex mymex::mxArray_to_cmplx(const mxArray* d)
 
 // =============================================================================
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
-
-mymex::idx_array_t mymex::mxArray_to_idx_array(const mxArray* v)
+eigen2mat::idx_array_t eigen2mat::mxArray_to_idx_array(const mxArray* v)
 {
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
@@ -295,7 +293,7 @@ mymex::idx_array_t mymex::mxArray_to_idx_array(const mxArray* v)
 
 // =====================================
 
-mymex::int_array_t mymex::mxArray_to_int_array(const mxArray* v)
+eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
 {
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
@@ -337,11 +335,10 @@ mymex::int_array_t mymex::mxArray_to_int_array(const mxArray* v)
      return ret;
 }
 
-#pragma clang diagnostic pop
 
 // =============================================================================
 
-mymex::real_vector_t mymex::mxArray_to_real_vector(const mxArray* v)
+eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxIsComplex(v)) {
@@ -363,7 +360,7 @@ mymex::real_vector_t mymex::mxArray_to_real_vector(const mxArray* v)
 
 // =====================================
 
-mymex::real_row_vector_t mymex::mxArray_to_real_row_vector(const mxArray* v)
+eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray* v)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxIsComplex(v)) {
@@ -384,7 +381,7 @@ mymex::real_row_vector_t mymex::mxArray_to_real_row_vector(const mxArray* v)
 
 // =====================================
 
-mymex::real_matrix_t mymex::mxArray_to_real_matrix(const mxArray* m)
+eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxIsComplex(m)) {
@@ -401,9 +398,7 @@ mymex::real_matrix_t mymex::mxArray_to_real_matrix(const mxArray* m)
 
 // =====================================
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wshorten-64-to-32"
-mymex::real_sp_matrix_t mymex::mxArray_to_real_sp_matrix(const mxArray* m)
+eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* m)
 {
      const auto M = mxGetM(m);
      const auto N = mxGetN(m);
@@ -440,14 +435,13 @@ mymex::real_sp_matrix_t mymex::mxArray_to_real_sp_matrix(const mxArray* m)
      ret.makeCompressed();
      return ret;
 }
-#pragma clang diagnostic pop
 
 
 // =====================================
 
-mymex::real_tensor_t mymex::mxArray_to_real_tensor(const mxArray* t)
+eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 {
-     const auto dims = mymex::get_dimensions(t);
+     const auto dims = eigen2mat::get_dimensions(t);
 
 #ifdef MYMEX_TYPE_CHECK
      if (dims[2] == 0) {
@@ -470,7 +464,7 @@ mymex::real_tensor_t mymex::mxArray_to_real_tensor(const mxArray* t)
 
 // =====================================
 
-mymex::real_sp_cell_t mymex::mxArray_to_real_sp_cell(const mxArray* c)
+eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (!mxIsCell(c)) {
@@ -496,7 +490,7 @@ mymex::real_sp_cell_t mymex::mxArray_to_real_sp_cell(const mxArray* c)
 // =============================================================================
 // complex data
 
-mymex::cmplx_vector_t mymex::mxArray_to_cmplx_vector(const mxArray* v)
+eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxGetN(v) != 1) {
@@ -526,7 +520,7 @@ mymex::cmplx_vector_t mymex::mxArray_to_cmplx_vector(const mxArray* v)
 
 // =====================================
 
-mymex::cmplx_row_vector_t mymex::mxArray_to_cmplx_row_vector(const mxArray* v)
+eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArray* v)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (mxGetM(v) != 1) {
@@ -555,7 +549,7 @@ mymex::cmplx_row_vector_t mymex::mxArray_to_cmplx_row_vector(const mxArray* v)
 
 // =====================================
 
-mymex::cmplx_matrix_t mymex::mxArray_to_cmplx_matrix(const mxArray* m)
+eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 {
 #ifdef MYMEX_TYPE_CHECK
      const auto id = mxGetClassID(m);
@@ -580,10 +574,7 @@ mymex::cmplx_matrix_t mymex::mxArray_to_cmplx_matrix(const mxArray* m)
 
 // =====================================
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wshorten-64-to-32"
-
-mymex::cmplx_sp_matrix_t mymex::mxArray_to_cmplx_sp_matrix(const mxArray* m)
+eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray* m)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (!mxIsComplex(m)) {
@@ -634,13 +625,12 @@ mymex::cmplx_sp_matrix_t mymex::mxArray_to_cmplx_sp_matrix(const mxArray* m)
      ret.makeCompressed();
      return ret;
 }
-#pragma clang diagnostic pop
 
 // =====================================
 
-mymex::cmplx_tensor_t mymex::mxArray_to_cmplx_tensor(const mxArray* t)
+eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 {
-     const auto dims = mymex::get_dimensions(t);
+     const auto dims = eigen2mat::get_dimensions(t);
 #ifdef MYMEX_TYPE_CHECK
      const auto id = mxGetClassID(t);
      if (id != mxDOUBLE_CLASS) {
@@ -667,7 +657,7 @@ mymex::cmplx_tensor_t mymex::mxArray_to_cmplx_tensor(const mxArray* t)
 }
 
 // =====================================
-mymex::cmplx_sp_cell_t mymex::mxArray_to_cmplx_sp_cell(const mxArray* c)
+eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 {
 #ifdef MYMEX_TYPE_CHECK
      if (!mxIsCell(c)) {
@@ -690,9 +680,9 @@ mymex::cmplx_sp_cell_t mymex::mxArray_to_cmplx_sp_cell(const mxArray* c)
 }
 
 // #############################################################################
-// mymex to MATLAB
+// eigen2mat to MATLAB
 
-mxArray* mymex::to_mxArray(bool b)
+mxArray* eigen2mat::to_mxArray(bool b)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxLOGICAL_CLASS, mxREAL);
      auto* data = reinterpret_cast<int*>(mxGetPr(ret));
@@ -702,7 +692,7 @@ mxArray* mymex::to_mxArray(bool b)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(double d)
+mxArray* eigen2mat::to_mxArray(double d)
 {
      auto ret = mxCreateDoubleMatrix(1, 1, mxREAL);
      *mxGetPr(ret) = d;
@@ -711,7 +701,7 @@ mxArray* mymex::to_mxArray(double d)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(int i)
+mxArray* eigen2mat::to_mxArray(int i)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
      auto* data = reinterpret_cast<int*>(mxGetPr(ret));
@@ -721,7 +711,7 @@ mxArray* mymex::to_mxArray(int i)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(size_t idx)
+mxArray* eigen2mat::to_mxArray(size_t idx)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxUINT32_CLASS, mxREAL);
      auto* data = reinterpret_cast<unsigned int*>(mxGetPr(ret));
@@ -731,7 +721,7 @@ mxArray* mymex::to_mxArray(size_t idx)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const dcomplex& z)
+mxArray* eigen2mat::to_mxArray(const dcomplex& z)
 {
      auto ret = mxCreateDoubleMatrix(1, 1, mxCOMPLEX);
      *mxGetPr(ret) = z.real();
@@ -741,7 +731,7 @@ mxArray* mymex::to_mxArray(const dcomplex& z)
 
 // =============================================================================
 
-mxArray* mymex::to_mxArray(const idx_array_t& v)
+mxArray* eigen2mat::to_mxArray(const idx_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxUINT32_CLASS, mxREAL);
 
@@ -755,7 +745,7 @@ mxArray* mymex::to_mxArray(const idx_array_t& v)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const int_array_t& v)
+mxArray* eigen2mat::to_mxArray(const int_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxINT32_CLASS, mxREAL);
 
@@ -770,7 +760,7 @@ mxArray* mymex::to_mxArray(const int_array_t& v)
 
 // =============================================================================
 
-mxArray* mymex::to_mxArray(const real_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const real_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxREAL);
      std::copy(v.data(), v.data() + v.rows(), mxGetPr(ret));
@@ -779,7 +769,7 @@ mxArray* mymex::to_mxArray(const real_vector_t& v)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const real_row_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const real_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxREAL);
      std::copy(v.data(), v.data() + v.cols(), mxGetPr(ret));
@@ -788,7 +778,7 @@ mxArray* mymex::to_mxArray(const real_row_vector_t& v)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const real_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const real_matrix_t& m)
 {
      const auto M = m.rows();
      const auto N = m.cols();
@@ -800,9 +790,9 @@ mxArray* mymex::to_mxArray(const real_matrix_t& m)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const real_sp_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const real_sp_matrix_t& m)
 {
-     const auto nzmax = m.nonZeros();
+     const size_t nzmax = m.nonZeros();
      auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxREAL);
 
      auto* values = m.valuePtr();
@@ -816,7 +806,7 @@ mxArray* mymex::to_mxArray(const real_sp_matrix_t& m)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const real_tensor_t& t)
+mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
 {
      dim_array_t dims;
      dims.fill(0);
@@ -847,14 +837,14 @@ mxArray* mymex::to_mxArray(const real_tensor_t& t)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const real_sp_cell_t& t)
+mxArray* eigen2mat::to_mxArray(const real_sp_cell_t& t)
 {
      return to_1Dcell_array_helper<real_sp_cell_t>(t);
 }
 
 // =============================================================================
 
-mxArray* mymex::to_mxArray(const cmplx_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const cmplx_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxCOMPLEX);
 
@@ -874,7 +864,7 @@ mxArray* mymex::to_mxArray(const cmplx_vector_t& v)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const cmplx_row_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const cmplx_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxCOMPLEX);
 
@@ -894,11 +884,11 @@ mxArray* mymex::to_mxArray(const cmplx_row_vector_t& v)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const cmplx_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const cmplx_matrix_t& m)
 {
-     const auto M = m.rows();
-     const auto N = m.cols();
-     const auto S = m.rows() * m.cols();
+     const size_t M = m.rows();
+     const size_t N = m.cols();
+     const size_t S = m.rows() * m.cols();
 
      auto ret = mxCreateDoubleMatrix(M, N, mxCOMPLEX);
 
@@ -908,7 +898,7 @@ mxArray* mymex::to_mxArray(const cmplx_matrix_t& m)
      myassert(imag);
 
      const auto data = m.data();
-     for (auto i(0) ; i < S ;++i) {
+     for (auto i(0UL) ; i < S ;++i) {
 	  real[i] = data[i].real();
 	  imag[i] = data[i].imag();
      }
@@ -918,9 +908,9 @@ mxArray* mymex::to_mxArray(const cmplx_matrix_t& m)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const cmplx_sp_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const cmplx_sp_matrix_t& m)
 {
-     const auto nzmax = m.nonZeros();
+     const size_t nzmax = m.nonZeros();
      auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxCOMPLEX);
 
      auto* values = m.valuePtr();
@@ -943,7 +933,7 @@ mxArray* mymex::to_mxArray(const cmplx_sp_matrix_t& m)
 
 // =====================================
 
-mxArray* mymex::to_mxArray(const cmplx_tensor_t& t)
+mxArray* eigen2mat::to_mxArray(const cmplx_tensor_t& t)
 {
      dim_array_t dims;
      dims.fill(0);
@@ -980,14 +970,14 @@ mxArray* mymex::to_mxArray(const cmplx_tensor_t& t)
      return ret;
 }
 
-mxArray* mymex::to_mxArray(const cmplx_sp_cell_t& t)
+mxArray* eigen2mat::to_mxArray(const cmplx_sp_cell_t& t)
 {
      return to_1Dcell_array_helper<cmplx_sp_cell_t>(t);
 }
 
 // #############################################################################
 
-mymex::dim_array_t mymex::get_dimensions(const mxArray* a)
+eigen2mat::dim_array_t eigen2mat::get_dimensions(const mxArray* a)
 {
      const auto ndims = mxGetNumberOfDimensions(a);
      
@@ -1004,3 +994,10 @@ mymex::dim_array_t mymex::get_dimensions(const mxArray* a)
 
 // =====================================
 
+#include "sparse_block.hpp"
+
+int test()
+{
+}
+
+#pragma clang diagnostic pop
