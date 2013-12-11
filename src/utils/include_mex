@@ -1,0 +1,7 @@
+#ifndef INCLUDE_MEX_INCLUDED
+#define INCLUDE_MEX_INCLUDED
+
+#pragma GCC system_header
+#include "mex.h"
+
+#endif /* INCLUDE_MEX_INCLUDED */

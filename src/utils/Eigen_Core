@@ -1,0 +1,7 @@
+#ifndef EIGEN_CORE_INCLUDED
+#define EIGEN_CORE_INCLUDED
+
+#pragma GCC system_header
+#include "Eigen/Core"
+
+#endif /* EIGEN_CORE_INCLUDED */

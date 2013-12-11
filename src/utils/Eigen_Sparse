@@ -1,0 +1,7 @@
+#ifndef EIGEN_SPARSE_INCLUDED
+#define EIGEN_SPARSE_INCLUDED
+
+#pragma GCC system_header
+#include "Eigen/SparseCore"
+
+#endif /* EIGEN_SPARSE_INCLUDED */
