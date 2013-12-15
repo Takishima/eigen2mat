@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 2.6)
 project (eigen2mat)
 
+# Set those variable if CMake is not able to find Matlab & Eigen
+#set( MATLAB_ROOT "C:\\Program Files\\MATLAB\\R2012b" )
+#  eigen directory should contain the 'signature_of_eigen3_matrix_library' file
+#set( CMAKE_PREFIX_PATH "path/to/eigen" )
+#set( CMAKE_PREFIX_PATH "D:\\Nguyen\\mex_files\\protection\\eigen-3.2.0" )
+
 # Project defines (can be modified)
 
 add_definitions( -DMYMEX_TYPE_CHECK )
 add_definitions( -DMYMEX_RANGE_CHECK )
+#add_definitions( -DEIGEN2MAT_NO_MATLAB )
 
 # ==============================================================================
 #                                                                              #
@@ -28,13 +35,14 @@ set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wstrict-null-sentinel -Wwrite-strings" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wunreachable-code -Wno-unknown-pragmas" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Weffc++" )
 
-set( MSVC_CXXFLAGS "-Weverything -Wno-c++98-compat -Wno-missing-prototypes" )
-set( MSVC_CXXFLAGS "${CLANG_CXXFLAGS} -stdlib=libc++" )
+set( MSVC_CXXFLAGS "/W3" )
 
 # ==============================================================================
 # Check which compiler we are dealing with and check its version
-execute_process( COMMAND ${CMAKE_CXX_COMPILER} -v
-  ERROR_VARIABLE _compiler_output )
+if( NOT MSVC )
+  execute_process( COMMAND ${CMAKE_CXX_COMPILER} -v
+    ERROR_VARIABLE _compiler_output )
+endif( NOT MSVC )
 
 # ======================================
 
@@ -58,8 +66,32 @@ elseif ( "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" )
   endif()
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_CXXFLAGS}" )
 
+elseif ( MSVC )
+  set( CMAKE_CXX_FLAGS "${MSVC_CXXFLAGS}" )
+  add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+  if (MSVC_VERSION LESS 1600)
+    set( COMPILER_VERSION "1900" )
+
+  elseif (MSVC_VERSION EQUAL 1600)
+    set( COMPILER_VERSION "2010" )
+
+  elseif (MSVC_VERSION EQUAL 1700)
+    set( COMPILER_VERSION "2011" )
+
+  elseif (MSVC_VERSION EQUAL 1800)
+    set( COMPILER_VERSION "2012" )
+
+  elseif (MSVC_VERSION EQUAL 1900)
+    set( COMPILER_VERSION "2013" )
+
+  elseif (MSVC_VERSION GREATER 1900)
+    set( COMPILER_VERSION "3000" )
+
+  endif (MSVC_VERSION LESS 1600)
+
 else ()
   message( FATAL_ERROR "Unkown compiler -> does not know which flag to use..." )
+
 endif()
 
 message(STATUS "C++ compiler version: ${COMPILER_VERSION} [${CMAKE_CXX_COMPILER}]")
@@ -67,14 +99,19 @@ message(STATUS "C++ compiler version: ${COMPILER_VERSION} [${CMAKE_CXX_COMPILER}
 # ======================================
 # Set Release/Debug compile flags
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -O0")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -O3")
+if( NOT MSVC )
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -O0")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -O3")
+else( NOT MSVC )
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od /Ob0")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG /O2 /Ot /GL /Oi")
+endif( NOT MSVC )
 
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE RELEASE CACHE STRING
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RELEASE CACHE STRING
       "Choose the type of build, options are: None, Debug, Release (default)."
       FORCE)
-ENDIF(NOT CMAKE_BUILD_TYPE)
+endif(NOT CMAKE_BUILD_TYPE)
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
 # ======================================
@@ -84,13 +121,16 @@ if( IS_GCC AND COMPILER_VERSION VERSION_LESS "4.7")
 
 elseif( IS_CLANG AND COMPILER_VERSION VERSION_LESS "3.1")
   message( FATAL_ERROR "This project requires at least clang-3.1" )
+
+elseif( IS_MSVC AND COMPILER_VERSION VERSION_LESS "2010")
+  message( FATAL_ERROR "This project requires at least MSVC2010" )
 endif()
 
 # ==============================================================================
 # Find out which git branch we are in
-execute_process( COMMAND git rev-parse --abbrev-ref HEAD
-  OUTPUT_VARIABLE git_branch_name 
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+# execute_process( COMMAND git rev-parse --abbrev-ref HEAD
+#   OUTPUT_VARIABLE git_branch_name 
+#   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # ======================================
 # Generate library file name
@@ -149,6 +189,12 @@ add_library( eigen2mat_static STATIC
   src/cpp/tensor_to_matrix.cpp
   )
 set_target_properties(eigen2mat_static PROPERTIES OUTPUT_NAME eigen2mat)
+
+add_executable( mytest test/test.cpp )
+target_link_libraries( mytest eigen2mat_static "${MATLAB_LIBRARIES}" )
+
+enable_testing()
+add_test( NAME dev-test COMMAND mytest )
 
 # add_library( eigen2mat_shared SHARED
 #   src/cpp/conversion.cpp

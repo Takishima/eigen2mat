@@ -1,7 +1,15 @@
 #ifndef EIGEN_LU_INCLUDED
 #define EIGEN_LU_INCLUDED
 
+#ifdef _MSC_VER
+#  pragma warning(push, 0)
+#endif /* _MSC_VER */
+
 #pragma GCC system_header
 #include "Eigen/LU"
+
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif /* _MSC_VER */
 
 #endif /* EIGEN_LU_INCLUDED */

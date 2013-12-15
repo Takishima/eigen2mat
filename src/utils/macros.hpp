@@ -1,0 +1,59 @@
+#ifndef MACROS_HPP_INCLUDED
+#define MACROS_HPP_INCLUDED
+
+#ifdef __clang__
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif /* __clang__ */
+
+#ifdef _MSC_VER
+#  define MSVC_IGNORE_WARNINGS(...)			\
+     __pragma(warning(push))				\
+     __pragma(warning (disable : __VA_ARGS__))
+#  define MSVC_RESTORE_WARNINGS __pragma(warning(pop))
+#else
+#  define MSVC_IGNORE_WARNINGS(...)
+#  define MSVC_RESTORE_WARNINGS
+#endif /* _MSC_VER */
+
+#ifdef __clang__
+#  define _CLANG_DO_PRAGMA(x) _Pragma (#x) 
+#  define _CLANG_IGNORE_ONE(w) _CLANG_DO_PRAGMA(clang diagnostic ignored #w)
+
+#  define CLANG_IGNORE_WARNINGS_ONE(w1)		\
+     _Pragma("clang diagnostic push")		\
+     _CLANG_IGNORE_ONE(w1)			
+#  define CLANG_IGNORE_WARNINGS_TWO(w1, w2)	\
+     CLANG_IGNORE_WARNINGS_ONE(w1)		\
+     _CLANG_IGNORE_ONE(w2)			
+#  define CLANG_IGNORE_WARNINGS_THREE(w1, w2, w3)	\
+     CLANG_IGNORE_WARNINGS_TWO(w1, w2)			\
+     _CLANG_IGNORE_ONE(w3)
+#  define CLANG_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)	\
+     CLANG_IGNORE_WARNINGS_THREE(w1, w2, w3)		\
+     _CLANG_IGNORE_ONE(w4)			
+#  define CLANG_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)	\
+     CLANG_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)			\
+     _CLANG_IGNORE_ONE(w5)			
+#  define CLANG_IGNORE_WARNINGS_SIX(w1, w2, w3, w4, w5, w6)		\
+     CLANG_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)			\
+     _CLANG_IGNORE_ONE(w6)			
+
+#  define CLANG_RESTORE_WARNINGS _CLANG_DO_PRAGMA(clang diagnostic pop)
+#else
+#  define _CLANG_DO_PRAGMA(x) 
+#  define _CLANG_IGNORE_ONE(w)
+#  define CLANG_IGNORE_WARNINGS_ONE(w1)
+#  define CLANG_IGNORE_WARNINGS_TWO(w1, w2)
+#  define CLANG_IGNORE_WARNINGS_THREE(w1, w2, w3)
+#  define CLANG_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)
+#  define CLANG_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)
+#  define CLANG_IGNORE_WARNINGS_SIX(w1, w2, w3, w4, w5, w6)
+#  define CLANG_RESTORE_WARNINGS
+#endif /* __clang__ */
+
+#ifdef __clang__
+#  pragma clang diagnostic pop
+#endif /* __clang__ */
+
+#endif /* MACROS_HPP_INCLUDED */

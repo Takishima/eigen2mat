@@ -1,14 +1,19 @@
+#include "macros.hpp"
+
+MSVC_IGNORE_WARNINGS(4018 4068 4244 4267 4800)
+
+CLANG_IGNORE_WARNINGS_FOUR(-Wundefined-reinterpret-cast,	\
+			   -Wconversion,			\
+			   -Wsign-conversion,			\
+			   -Wc++98-compat-pedantic)
+
+// =============================================================================
+
 #include "conversion.hpp"
 
 #include <algorithm>
 
 // =============================================================================
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundefined-reinterpret-cast"
-#pragma clang diagnostic ignored "-Wconversion"
-#pragma clang diagnostic ignored "-Wsign-conversion"
-#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 
 template <typename T>
 T mxArray_to_single_helper(const mxArray* a)
@@ -136,7 +141,7 @@ mxArray* to_1Dcell_array_helper(const cell_array_t& t)
 
 bool eigen2mat::mxArray_to_bool(const mxArray* b)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(b)) {
 	  mexWarnMsgTxt("mxArray_to_bool(): argument is complex!");
      }
@@ -147,7 +152,7 @@ bool eigen2mat::mxArray_to_bool(const mxArray* b)
      if (M != 1 or N != 1) {
 	  mexErrMsgTxt("mxArray_to_bool(): value received is not a scalar!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      return mxArray_to_single_helper<bool>(b);
 }
 
@@ -155,7 +160,7 @@ bool eigen2mat::mxArray_to_bool(const mxArray* b)
 
 double eigen2mat::mxArray_to_double(const mxArray* d)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(d)) {
 	  mexWarnMsgTxt("mxArray_to_double(): argument is complex!");
      }
@@ -166,7 +171,7 @@ double eigen2mat::mxArray_to_double(const mxArray* d)
      if (M != 1 or N != 1) {
 	  mexErrMsgTxt("mxArray_to_double(): value received is not a scalar!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      return mxArray_to_single_helper<double>(d);
 }
 
@@ -174,7 +179,7 @@ double eigen2mat::mxArray_to_double(const mxArray* d)
 
 size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 {
-#ifdef MYMEX_TYPE_CHECK     
+#ifdef EIGEN2MAT_TYPE_CHECK     
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
      if (M != 1 or N != 1) {
@@ -196,7 +201,7 @@ size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 	      id != mxUINT32_CLASS && id != mxUINT64_CLASS) {
 	  mexErrMsgTxt("mxArray_to_idx(): input is not unsigned integer!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      return mxArray_to_single_helper<size_t>(d);
 }
 
@@ -204,7 +209,7 @@ size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 
 int eigen2mat::mxArray_to_int(const mxArray* d)
 {
-#ifdef MYMEX_TYPE_CHECK     
+#ifdef EIGEN2MAT_TYPE_CHECK     
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
      
@@ -227,18 +232,18 @@ int eigen2mat::mxArray_to_int(const mxArray* d)
 	      id != mxINT32_CLASS && id != mxINT64_CLASS) {
 	  mexErrMsgTxt("mxArray_to_int(): input is not integer!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      return mxArray_to_single_helper<int>(d);
 }
 
 eigen2mat::dcomplex eigen2mat::mxArray_to_cmplx(const mxArray* d)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsComplex(d)) {
 	  mexWarnMsgTxt("mxArray_to_cmplx(): argument is real!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      if (!mxIsComplex(d)) {
 	  return dcomplex(mxGetPr(d)[0], 0.0);
      }
@@ -254,7 +259,7 @@ eigen2mat::idx_array_t eigen2mat::mxArray_to_idx_array(const mxArray* v)
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
 
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_idx_array(): argument is complex!");
      }
@@ -273,7 +278,7 @@ eigen2mat::idx_array_t eigen2mat::mxArray_to_idx_array(const mxArray* v)
      if (M == 1) {
 	  mexWarnMsgTxt("mxArray_to_idx_array(): v is row-vector, converting to column vector");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      /*
       * Need to be a little careful here when copying data from the mxArray
@@ -298,7 +303,7 @@ eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
 
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_int_array(): argument is complex!");
      }
@@ -317,7 +322,7 @@ eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
      if (M == 1) {
 	  mexWarnMsgTxt("mxArray_to_int_array(): v is row-vector, converting to column vector");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      
      /*
       * Need to be a little careful here when copying data from the mxArray
@@ -340,7 +345,7 @@ eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
 
 eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_real_vector(): argument is complex!");
      }
@@ -353,7 +358,7 @@ eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_real_vector(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      return Eigen::Map<real_vector_t>(mxGetPr(v), mxGetM(v));
 }
@@ -362,7 +367,7 @@ eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 
 eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray* v)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_real_row_vector(): argument is complex!");
      }
@@ -374,7 +379,7 @@ eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_real_row_vector(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      return Eigen::Map<real_row_vector_t>(mxGetPr(v), mxGetN(v));
 }
@@ -383,7 +388,7 @@ eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray
 
 eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(m)) {
 	  mexWarnMsgTxt("mxArray_to_real_matrix(): argument is complex!");
      }
@@ -391,7 +396,7 @@ eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_real_matrix(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      return Eigen::Map<real_matrix_t>(mxGetPr(m), mxGetM(m), mxGetN(m));
 }
@@ -402,7 +407,7 @@ eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* 
 {
      const auto M = mxGetM(m);
      const auto N = mxGetN(m);
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(m)) {
 	  mexWarnMsgTxt("mxArray_to_real_sp_matrix(): argument is complex!");
      }
@@ -413,7 +418,7 @@ eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* 
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_real_matrix(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      auto* values = mxGetPr(m);
      auto* ic = mxGetIr(m);
      auto* jc = mxGetJc(m);
@@ -443,7 +448,7 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 {
      const auto dims = eigen2mat::get_dimensions(t);
 
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (dims[2] == 0) {
 	  mexErrMsgTxt("mxArray_to_cmplx_tensor(): argument is not a tensor!");
      }          
@@ -451,7 +456,7 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_real_tensor(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      real_tensor_t ret(dims[2], real_matrix_t(dims[0], dims[1]));
      const auto mat_size = dims[0] * dims[1];
@@ -466,7 +471,7 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 
 eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsCell(c)) {
 	  mexErrMsgTxt("mxArray_to_real_sp_cell(): argument is not a cell array");
      }     
@@ -474,7 +479,7 @@ eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
      if (mxGetN(c) > 1) {
 	  mexErrMsgTxt("mxArray_to_real_sp_cell(): argument is not a 1D cell array");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      const auto numel = mxGetNumberOfElements(c);
      real_sp_cell_t ret(numel);
@@ -492,7 +497,7 @@ eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 
 eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxGetN(v) != 1) {
 	  mexErrMsgTxt("mxArray_to_real_vector(): argument is not a column vector!");
      }
@@ -501,7 +506,7 @@ eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_cmplx_vector(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      auto size(mxGetM(v));
      if (size == 1) {
@@ -522,7 +527,7 @@ eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 
 eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArray* v)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (mxGetM(v) != 1) {
 	  mexErrMsgTxt("mxArray_to_real_row_vector(): argument is not a row vector!");
      }
@@ -530,7 +535,7 @@ eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArr
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_cmplx_row_vector(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      auto size(mxGetM(v));
      if (size == 1) {
@@ -551,12 +556,12 @@ eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArr
 
 eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      const auto id = mxGetClassID(m);
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_cmplx_matrix(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      const auto rows(mxGetM(m));
      const auto cols(mxGetN(m));
@@ -576,7 +581,7 @@ eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 
 eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray* m)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsComplex(m)) {
 	  mexWarnMsgTxt("mxArray_to_cmplx_sp_matrix(): argument is real!");
      }
@@ -587,7 +592,7 @@ eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_cmplx_sp_matrix(): data type of m is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
      auto* real = mxGetPr(m);
      auto* imag = mxGetPi(m);
      auto* ic = mxGetIr(m);
@@ -631,12 +636,12 @@ eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray
 eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 {
      const auto dims = eigen2mat::get_dimensions(t);
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      const auto id = mxGetClassID(t);
      if (id != mxDOUBLE_CLASS) {
 	  mexErrMsgTxt("mxArray_to_cmplx_tensor(): data type of v is not double!");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      cmplx_tensor_t ret(dims[2], cmplx_matrix_t(dims[0], dims[1]));
      const auto mat_size = dims[0] * dims[1];
@@ -659,14 +664,14 @@ eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 // =====================================
 eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 {
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsCell(c)) {
 	  mexErrMsgTxt("mxArray_to_cmplx_sp_cell(): argument is not a cell array");
      }     
      if (mxGetN(c) > 1) {
 	  mexErrMsgTxt("mxArray_to_cmplx_sp_cell(): argument is not a 1D cell array");
      }
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      const auto numel = mxGetNumberOfElements(c);
      cmplx_sp_cell_t ret(numel);
@@ -812,11 +817,11 @@ mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
      dims.fill(0);
      dims[2] = t.size();
 
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
   if (dims[2] == 0) {
        mexErrMsgTxt("to_mxArray(real_tensor_t): argument is not a tensor!");
   }     
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      dims[0] = t[0].rows();
      dims[1] = t[0].cols();
@@ -939,11 +944,11 @@ mxArray* eigen2mat::to_mxArray(const cmplx_tensor_t& t)
      dims.fill(0);
      dims[2] = t.size();
 
-#ifdef MYMEX_TYPE_CHECK
+#ifdef EIGEN2MAT_TYPE_CHECK
   if (dims[2] == 0) {
        mexErrMsgTxt("to_mxArray(real_tensor_t): argument is not a tensor!");
   }     
-#endif /* MYMEX_TYPE_CHECK */
+#endif /* EIGEN2MAT_TYPE_CHECK */
 
      dims[0] = t[0].rows();
      dims[1] = t[0].cols();
@@ -994,10 +999,5 @@ eigen2mat::dim_array_t eigen2mat::get_dimensions(const mxArray* a)
 
 // =====================================
 
-#include "sparse_block.hpp"
-
-int test()
-{
-}
-
-#pragma clang diagnostic pop
+CLANG_RESTORE_WARNINGS
+MSVC_RESTORE_WARNINGS

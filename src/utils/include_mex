@@ -1,7 +1,15 @@
 #ifndef INCLUDE_MEX_INCLUDED
 #define INCLUDE_MEX_INCLUDED
 
+#ifdef _MSC_VER
+#  pragma warning(push, 0)
+#endif /* _MSC_VER */
+
 #pragma GCC system_header
 #include "mex.h"
+
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif /* _MSC_VER */
 
 #endif /* INCLUDE_MEX_INCLUDED */

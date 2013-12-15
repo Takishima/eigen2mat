@@ -1,9 +1,9 @@
 #include "tensor_to_matrix.hpp"
+#include "macros.hpp"
 
 #include "include_mex"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-conversion"
+CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
 
 template <typename matrix_t>
 matrix_t tensor_to_matrix_helper(const std::vector<matrix_t>& t,
@@ -256,4 +256,4 @@ void eigen2mat::tensor_slice_assign(cmplx_tensor_t& t_lhs, DIR_T dim_lhs, size_t
 
 // =============================================================================
 
-#pragma clang diagnostic pop
+CLANG_RESTORE_WARNINGS

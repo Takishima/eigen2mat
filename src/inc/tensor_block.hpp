@@ -25,22 +25,22 @@ namespace eigen2mat {
 
 	  value_type& operator[] (size_t k)
 	       { 
-#ifdef MYMEX_RANGE_CHECK
+#ifdef EIGEN2MAT_RANGE_CHECK
 		    if (k > (end_ - begin_) ) {
 			 mexErrMsgTxt("tensor_block_t::operator[]: index out of range!");
 		    }
-#endif /* MYMEX_RANGE_CHECK */
+#endif /* EIGEN2MAT_RANGE_CHECK */
 		    return *(begin_ + k);
 	       }
 
 	  value_type operator[] (size_t k) const
 	       { 
-#ifdef MYMEX_RANGE_CHECK
+#ifdef EIGEN2MAT_RANGE_CHECK
 		    if (k > (end_ - begin_) ) {
 			 mexErrMsgTxt("tensor_block_t::operator[]: index out of range!");
 			 return value_type();
 		    }
-#endif /* MYMEX_RANGE_CHECK */
+#endif /* EIGEN2MAT_RANGE_CHECK */
 		    return *(begin_ + k);
 	       }
 
