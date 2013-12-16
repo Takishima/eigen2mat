@@ -208,8 +208,11 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
 
      const size_t M_lhs = t_lhs[0].rows();
      const size_t N_lhs = t_lhs[0].cols();
+
+#ifndef NDEBUG
      const size_t M_rhs = m_rhs.rows();
-     const size_t N_rhs = m_rhs.cols();
+     const size_t N_rhs = m_rhs.cols();     
+#endif /* NDEBUG */
      
      if (dim_lhs == eigen2mat::Z) {
 	  // t_lhs(:, :, i1) = m_rhs(:, :);

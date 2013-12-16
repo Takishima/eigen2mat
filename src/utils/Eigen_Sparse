@@ -5,6 +5,13 @@
 #  pragma warning(push, 0)
 #endif /* _MSC_VER */
 
+#include <vector>
+
+namespace eigen2mat {
+     template<typename _Scalar, int _Options, typename _Index> 
+     class sparse_slice;
+} // namespace eigen2mat
+
 #pragma GCC system_header
 #include "Eigen/SparseCore"
 
