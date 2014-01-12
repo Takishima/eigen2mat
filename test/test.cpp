@@ -51,6 +51,8 @@ int main(int /*argc*/, char** /*argv*/)
      eigen2mat::print(mat);
      eigen2mat::print("=================");
 
+     mat.coeffRef(9, 6) = 100000;
+
      std::vector<int> rows(2); rows[0] = 1; rows[1] = 5;
      std::vector<int> cols(2); cols[0] = 5; cols[1] = 6;
 

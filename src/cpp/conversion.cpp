@@ -1001,3 +1001,16 @@ eigen2mat::dim_array_t eigen2mat::get_dimensions(const mxArray* a)
 
 CLANG_RESTORE_WARNINGS
 MSVC_RESTORE_WARNINGS
+
+
+
+eigen2mat::real_sp_matrix_t mafunction(const mxArray* a)
+{
+     eigen2mat::real_sp_matrix_t m = eigen2mat::mxArray_to_real_sp_matrix(a);
+     // eigen2mat::real_sp_matrix_t m(10, 7);
+     m.coeffRef(0,0) = 100000;
+     // m.makeCompressed();
+     m.coeffRef(m.rows()-1, m.cols()-1) = 10000;
+
+     return m;
+}

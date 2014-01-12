@@ -18,6 +18,7 @@
 
 #include <cassert>
 
+MSVC_IGNORE_WARNINGS(4244)
 CLANG_IGNORE_WARNINGS_TWO(-Wpadded,-Wshorten-64-to-32)
 
 namespace eigen2mat {
@@ -35,11 +36,12 @@ namespace eigen2mat {
 	       }
 
 	  template<typename OtherDerived>
-	  inline comma_initializer(XprType& xpr, const Eigen::DenseBase<OtherDerived>& other)
-	       : xpr_(xpr), row_(0), col_(other.cols()), cur_block_rows_(other.rows())
+	  inline comma_initializer(XprType& xpr,
+				   const Eigen::DenseBase<OtherDerived>& other)
+	       : xpr_(xpr), row_(0), col_(other.cols()), 
+		 cur_block_rows_(other.rows())
 	       {
-		
-    block_assign_(0, 0, other.rows(), other.cols(), other);
+		    block_assign_(0, 0, other.rows(), other.cols(), other);
 		    // m_xpr.block(0, 0, other.rows(), other.cols()) = other;
 	       }
 
@@ -147,5 +149,6 @@ namespace eigen2mat {
 } // namespace eigen2mat
 
 CLANG_RESTORE_WARNINGS
+MSVC_RESTORE_WARNINGS
 
 #endif /* COMMA_INITIALIZER_HPP_INCLUDED */

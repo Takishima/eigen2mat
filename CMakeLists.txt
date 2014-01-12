@@ -128,9 +128,9 @@ endif()
 
 # ==============================================================================
 
-if( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
+if( ${CMAKE_BUILD_TYPE} MATCHES "Debug" OR ${CMAKE_BUILD_TYPE} MATCHES "DEBUG" )
   set( lib_suffix "d" )
-elseif( ${CMAKE_BUILD_TYPE} MATCHES "Release" )
+elseif( ${CMAKE_BUILD_TYPE} MATCHES "Release" OR ${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
   set( lib_suffix "" )
 else()
   set( lib_suffix "u" )

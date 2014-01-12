@@ -16,6 +16,8 @@
 #include "Eigen_Core"
 #include "Eigen_Sparse"
 
+#include "include_mex"
+
 #include <cassert>
 #include <vector>
 
@@ -23,14 +25,10 @@
 #  include <stdexcept>
 #endif /* EIGEN2MAT_RANGE_CHECK */
 
+MSVC_IGNORE_WARNINGS(4267)
 CLANG_IGNORE_WARNINGS_TWO(-Wshorten-64-to-32,-Wsign-conversion)
 
 namespace eigen2mat {
-     /*
-       inner indices = cols indices in RowMajor
-       outer indices = rows indices in RowMajor
-       exactly opposite for ColumnMajor
-      */
      template<typename _Scalar, int _Options, typename _Index> 
      class sparse_slice
      {
@@ -46,7 +44,7 @@ namespace eigen2mat {
 
 	  typedef sparse_slice<_Scalar, _Options, _Index> self_t;
 
-	  sparse_slice(Eigen::SparseMatrix<_Scalar, _Options, _Index>& m,
+	  sparse_slice(matrix_t& m,
 		       std::vector<Index> row_indices,
 		       std::vector<Index> col_indices);
 
@@ -105,18 +103,14 @@ namespace eigen2mat {
 	  comma_initializer<sparse_slice> operator<< (
 	       const Scalar& s)
 	       {
-		    return comma_initializer<sparse_slice>(
-			 *this,
-			 s);
+		    return comma_initializer<sparse_slice>(*this, s);
 	       }
 
 	  template<typename OtherDerived>
 	  comma_initializer<sparse_slice> operator<< (
 	       const Eigen::DenseBase<OtherDerived>& other)
 	       {
-		    return comma_initializer<sparse_slice>(
-			 *this,
-			 other);
+		    return comma_initializer<sparse_slice>(*this, other);
 	       }
      private:
 	  template <typename T>
@@ -137,7 +131,7 @@ namespace eigen2mat {
 
      template<typename _Scalar, int _Options, typename _Index>
      sparse_slice<_Scalar, _Options, _Index>::sparse_slice(
-	  Eigen::SparseMatrix<_Scalar, _Options, _Index>& m,
+	  matrix_t& m,
 	  std::vector<Index> row_indices,
 	  std::vector<Index> col_indices)
 	  : mat_(&m), 
@@ -170,6 +164,7 @@ namespace eigen2mat {
 	  assert(cols() == other.cols());
 #endif /* EIGEN2MAT_RANGE_CHECK */
 
+
 	  const Index rsize = row_indices_.size();
 	  const Index csize = col_indices_.size();
 
@@ -182,10 +177,19 @@ namespace eigen2mat {
 	   *     }
 	   * }
 	   */
+
+
 	  for (Index j(0) ; j < csize ; ++j) {
 	       for (Index i(0) ; i < rsize ; ++i) {
-		    mat_->coeffRef(row_indices_[i], col_indices_[j]) = 
-			 other.coeff(i, j);
+		    if (mat_->coeff(row_indices_[i], col_indices_[j]) != _Scalar(0)) {
+			 // mat_->coeffRef(row_indices_[i], col_indices_[j]);
+			 mexPrintf("(%d, %d) is NON-NULL\n", row_indices_[i], col_indices_[j]);
+		    }
+		    else {
+			 mexPrintf("(%d, %d) is an explicit 0\n", row_indices_[i], col_indices_[j]);
+		    }
+		    // mat_->coeffRef(row_indices_[i], col_indices_[j]) =
+		    // 	 other.coeff(i, j);
 	       }
 	  }
      }
@@ -194,5 +198,6 @@ namespace eigen2mat {
 } // namespace eigen2mat
 
 CLANG_RESTORE_WARNINGS
+MSVC_RESTORE_WARNINGS
 
 #endif /* SPARSE_SLICE_HPP_INCLUDED */
