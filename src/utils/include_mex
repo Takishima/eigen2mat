@@ -3,10 +3,12 @@
 
 #ifdef _MSC_VER
 #  pragma warning(push, 0)
+#else
+#  pragma GCC system_header
 #endif /* _MSC_VER */
 
-#pragma GCC system_header
 #include "mex.h"
+#include "matrix.h" // for mxAssert
 
 #ifdef _MSC_VER
 #  pragma warning(pop)

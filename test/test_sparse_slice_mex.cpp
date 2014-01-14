@@ -9,46 +9,44 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		  int nrhs, const mxArray*prhs[] )
 
 {
-     if (nrhs != 1) {
-	  mexErrMsgTxt("Function requires only one argument!");
+     if (nrhs != 3) {
+	  mexErrMsgTxt("Function requires three arguments (sparse matrix + range1 + range2)!");
      }
      if (nlhs != 1) {
-	  mexErrMsgTxt("Function requires one output argument!");
+     	  mexErrMsgTxt("Function requires one output argument!");
      }
 
-     const auto a = prhs[0];
+     const auto a     = prhs[0];
+     const auto mrows = prhs[1];
+     const auto mcols = prhs[2];
 
      if (!mxIsSparse(a)) {
 	  mexErrMsgTxt("Input argument is not sparse!");	  
      }
 
-     std::vector<int> rows(2); rows[0] = 1; rows[1] = 5;
-     std::vector<int> cols(2); cols[0] = 5; cols[1] = 6;
+     eigen2mat::int_array_t rows = eigen2mat::mxArray_to_int_array(mrows);
+     eigen2mat::int_array_t cols = eigen2mat::mxArray_to_int_array(mcols);
 
+     // convert MATLAB indices to C++ indices...
+     for (auto i(0UL) ; i < rows.size() ; ++i) {
+	  rows[i] -= 1;
+     }
+     for (auto i(0UL) ; i < cols.size() ; ++i) {
+	  cols[i] -= 1;
+     }
+     
      if (mxIsComplex(a)) {
-	  mexPrintf("Got a complex sparse matrix...\n");
 	  auto m = eigen2mat::mxArray_to_cmplx_sp_matrix(a);
-	  mexPrintf("  creating slice...\n");
-	  eigen2mat::sparse_slice<eigen2mat::dcomplex, decltype(m)::Options, int> slice(m, rows, cols);
+	  eigen2mat::sparse_slice<eigen2mat::dcomplex, 0, int> slice(m, rows, cols);
 	  eigen2mat::cmplx_matrix_t oc = eigen2mat::cmplx_matrix_t::Ones(rows.size(), cols.size());
-	  mexPrintf("  assigning to slice...\n");
-	  // slice = oc;
-	  mexPrintf("  creating output...\n");
+	  slice = oc;
 	  plhs[0] = eigen2mat::to_mxArray(m);
      }
      else {
-	  mexPrintf("Got a real sparse matrix...\n");
-	  Eigen::SparseMatrix<double> m(14, 14);
-	  m.insert(1, 5) = 10;
-	  // auto m = eigen2mat::mxArray_to_real_sp_matrix(a);
-	  mexPrintf("  creating slice...\n");
-	  eigen2mat::sparse_slice<double, decltype(m)::Options, int> slice(m, rows, cols);
+	  auto m = eigen2mat::mxArray_to_real_sp_matrix(a);
+	  eigen2mat::sparse_slice<double, 0, int> slice(m, rows, cols);
 	  eigen2mat::real_matrix_t o = eigen2mat::real_matrix_t::Ones(rows.size(), cols.size());
-	  mexPrintf("  assigning to slice...\n");
-	  
-	  // m.insert(1, 5) = 10;
-	  // slice = o;
-	  mexPrintf("  creating output...\n");
+	  slice = o;
 	  plhs[0] = eigen2mat::to_mxArray(m);
      }
 }

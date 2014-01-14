@@ -129,6 +129,8 @@ mxArray* to_1Dcell_array_helper(const cell_array_t& t)
      const mwSize dims[1] = {t.size()};
      
      auto ret = mxCreateCellArray(1, dims);
+     e2m_assert(ret);
+
      for (auto i(0UL) ; i < dims[0] ; ++i) {
 	  // mxSetCell(mxArray *pm, mwIndex index, mxArray *value);
 	  mxSetCell(ret, i, eigen2mat::to_mxArray(t[i]));
@@ -141,6 +143,7 @@ mxArray* to_1Dcell_array_helper(const cell_array_t& t)
 
 bool eigen2mat::mxArray_to_bool(const mxArray* b)
 {
+     e2m_assert(b);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(b)) {
 	  mexWarnMsgTxt("mxArray_to_bool(): argument is complex!");
@@ -160,6 +163,7 @@ bool eigen2mat::mxArray_to_bool(const mxArray* b)
 
 double eigen2mat::mxArray_to_double(const mxArray* d)
 {
+     e2m_assert(d);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(d)) {
 	  mexWarnMsgTxt("mxArray_to_double(): argument is complex!");
@@ -179,6 +183,7 @@ double eigen2mat::mxArray_to_double(const mxArray* d)
 
 size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 {
+     e2m_assert(d);
 #ifdef EIGEN2MAT_TYPE_CHECK     
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
@@ -209,6 +214,7 @@ size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 
 int eigen2mat::mxArray_to_int(const mxArray* d)
 {
+     e2m_assert(d);
 #ifdef EIGEN2MAT_TYPE_CHECK     
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
@@ -256,6 +262,7 @@ eigen2mat::dcomplex eigen2mat::mxArray_to_cmplx(const mxArray* d)
 
 eigen2mat::idx_array_t eigen2mat::mxArray_to_idx_array(const mxArray* v)
 {
+     e2m_assert(v);
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
 
@@ -300,6 +307,7 @@ eigen2mat::idx_array_t eigen2mat::mxArray_to_idx_array(const mxArray* v)
 
 eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
 {
+     e2m_assert(v);
      const auto M = mxGetM(v);
      const auto N = mxGetN(v);
 
@@ -345,6 +353,7 @@ eigen2mat::int_array_t eigen2mat::mxArray_to_int_array(const mxArray* v)
 
 eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 {
+     e2m_assert(v);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_real_vector(): argument is complex!");
@@ -367,6 +376,7 @@ eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 
 eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray* v)
 {
+     e2m_assert(v);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(v)) {
 	  mexWarnMsgTxt("mxArray_to_real_row_vector(): argument is complex!");
@@ -388,6 +398,7 @@ eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray
 
 eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
 {
+     e2m_assert(m);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxIsComplex(m)) {
 	  mexWarnMsgTxt("mxArray_to_real_matrix(): argument is complex!");
@@ -405,6 +416,7 @@ eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
 
 eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* m)
 {
+     e2m_assert(m);
      const auto M = mxGetM(m);
      const auto N = mxGetN(m);
 #ifdef EIGEN2MAT_TYPE_CHECK
@@ -422,6 +434,9 @@ eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* 
      auto* values = mxGetPr(m);
      auto* ic = mxGetIr(m);
      auto* jc = mxGetJc(m);
+     e2m_assert(values);
+     e2m_assert(ic);
+     e2m_assert(jc);
 
      const auto nzmax = mxGetNzmax(m);
 
@@ -446,6 +461,7 @@ eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* 
 
 eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 {
+     e2m_assert(t);
      const auto dims = eigen2mat::get_dimensions(t);
 
 #ifdef EIGEN2MAT_TYPE_CHECK
@@ -471,6 +487,7 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 
 eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 {
+     e2m_assert(c);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsCell(c)) {
 	  mexErrMsgTxt("mxArray_to_real_sp_cell(): argument is not a cell array");
@@ -486,7 +503,7 @@ eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 
      for (auto i(0UL) ; i < numel ; ++i) {
 	  const auto* const data = mxGetCell(c, i);
-	  mxAssert(data, "Pointer is null!");
+	  e2m_assert(data);
 	  ret[i] = mxArray_to_real_sp_matrix(data);
      }
      return ret;
@@ -497,6 +514,7 @@ eigen2mat::real_sp_cell_t eigen2mat::mxArray_to_real_sp_cell(const mxArray* c)
 
 eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 {
+     e2m_assert(v);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxGetN(v) != 1) {
 	  mexErrMsgTxt("mxArray_to_real_vector(): argument is not a column vector!");
@@ -527,6 +545,7 @@ eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 
 eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArray* v)
 {
+     e2m_assert(v);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (mxGetM(v) != 1) {
 	  mexErrMsgTxt("mxArray_to_real_row_vector(): argument is not a row vector!");
@@ -556,6 +575,7 @@ eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArr
 
 eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 {
+     e2m_assert(m);
 #ifdef EIGEN2MAT_TYPE_CHECK
      const auto id = mxGetClassID(m);
      if (id != mxDOUBLE_CLASS) {
@@ -581,6 +601,7 @@ eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 
 eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray* m)
 {
+     e2m_assert(m);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsComplex(m)) {
 	  mexWarnMsgTxt("mxArray_to_cmplx_sp_matrix(): argument is real!");
@@ -635,6 +656,7 @@ eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray
 
 eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 {
+     e2m_assert(t);
      const auto dims = eigen2mat::get_dimensions(t);
 #ifdef EIGEN2MAT_TYPE_CHECK
      const auto id = mxGetClassID(t);
@@ -664,6 +686,7 @@ eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 // =====================================
 eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 {
+     e2m_assert(c);
 #ifdef EIGEN2MAT_TYPE_CHECK
      if (!mxIsCell(c)) {
 	  mexErrMsgTxt("mxArray_to_cmplx_sp_cell(): argument is not a cell array");
@@ -678,7 +701,7 @@ eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 
      for (auto i(0UL) ; i < numel ; ++i) {
 	  const mxArray* data = mxGetCell(c, i);
-	  myassert(data);
+	  e2m_assert(data);
 	  ret[i] = mxArray_to_cmplx_sp_matrix(data);
      }
      return ret;
@@ -690,6 +713,8 @@ eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 mxArray* eigen2mat::to_mxArray(bool b)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxLOGICAL_CLASS, mxREAL);
+     e2m_assert(ret);
+
      auto* data = reinterpret_cast<int*>(mxGetPr(ret));
      data[0] = b;
      return ret;
@@ -700,6 +725,8 @@ mxArray* eigen2mat::to_mxArray(bool b)
 mxArray* eigen2mat::to_mxArray(double d)
 {
      auto ret = mxCreateDoubleMatrix(1, 1, mxREAL);
+     e2m_assert(ret);
+
      *mxGetPr(ret) = d;
      return ret;
 }
@@ -709,6 +736,8 @@ mxArray* eigen2mat::to_mxArray(double d)
 mxArray* eigen2mat::to_mxArray(int i)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
+     e2m_assert(ret);
+
      auto* data = reinterpret_cast<int*>(mxGetPr(ret));
      data[0] = i;
      return ret;
@@ -719,6 +748,8 @@ mxArray* eigen2mat::to_mxArray(int i)
 mxArray* eigen2mat::to_mxArray(size_t idx)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxUINT32_CLASS, mxREAL);
+     e2m_assert(ret);
+
      auto* data = reinterpret_cast<unsigned int*>(mxGetPr(ret));
      data[0] = idx;
      return ret;
@@ -729,6 +760,8 @@ mxArray* eigen2mat::to_mxArray(size_t idx)
 mxArray* eigen2mat::to_mxArray(const dcomplex& z)
 {
      auto ret = mxCreateDoubleMatrix(1, 1, mxCOMPLEX);
+     e2m_assert(ret);
+
      *mxGetPr(ret) = z.real();
      *mxGetPi(ret) = z.imag();
      return ret;
@@ -739,6 +772,7 @@ mxArray* eigen2mat::to_mxArray(const dcomplex& z)
 mxArray* eigen2mat::to_mxArray(const idx_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxUINT32_CLASS, mxREAL);
+     e2m_assert(ret);
 
      // this is ugly, but apparently there's no way around it...
      typedef unsigned int v_t;
@@ -753,6 +787,7 @@ mxArray* eigen2mat::to_mxArray(const idx_array_t& v)
 mxArray* eigen2mat::to_mxArray(const int_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxINT32_CLASS, mxREAL);
+     e2m_assert(ret);
 
      // this is ugly, but apparently there's no way around it...
      typedef int v_t;
@@ -768,6 +803,8 @@ mxArray* eigen2mat::to_mxArray(const int_array_t& v)
 mxArray* eigen2mat::to_mxArray(const real_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxREAL);
+     e2m_assert(ret);
+
      std::copy(v.data(), v.data() + v.rows(), mxGetPr(ret));
      return ret;
 }
@@ -777,6 +814,8 @@ mxArray* eigen2mat::to_mxArray(const real_vector_t& v)
 mxArray* eigen2mat::to_mxArray(const real_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxREAL);
+     e2m_assert(ret);
+
      std::copy(v.data(), v.data() + v.cols(), mxGetPr(ret));
      return ret;
 }
@@ -789,6 +828,8 @@ mxArray* eigen2mat::to_mxArray(const real_matrix_t& m)
      const auto N = m.cols();
 
      auto ret = mxCreateDoubleMatrix(M, N, mxREAL);
+     e2m_assert(ret);
+
      std::copy(m.data(), m.data() + M*N, mxGetPr(ret));
      return ret;
 }
@@ -796,6 +837,7 @@ mxArray* eigen2mat::to_mxArray(const real_matrix_t& m)
 // =====================================
 
 mxArray* eigen2mat::to_mxArray(const real_sp_matrix_t& m)
+
 {
      const size_t nzmax = m.nonZeros();
      auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxREAL);
@@ -803,9 +845,57 @@ mxArray* eigen2mat::to_mxArray(const real_sp_matrix_t& m)
      auto* values = m.valuePtr();
      auto* ic = m.innerIndexPtr();
      auto* jc = m.outerIndexPtr();
-     std::copy(values, values + nzmax, mxGetPr(ret));
-     std::copy(ic, ic + nzmax, mxGetIr(ret));
-     std::copy(jc, jc + m.outerSize()+1, mxGetJc(ret));
+     e2m_assert(values);
+     e2m_assert(ic);
+     e2m_assert(jc);
+
+     auto* other_values = mxGetPr(ret);
+     auto* other_ic = mxGetIr(ret);
+     auto* other_jc = mxGetJc(ret);
+     e2m_assert(other_values);
+     e2m_assert(other_ic);
+     e2m_assert(other_jc);
+
+     e2m_assert(m.cols() == m.outerSize());
+     if (m.isCompressed()) {
+	  // matrix is compressed => easy !
+	  std::copy(values, values + nzmax, other_values);
+	  std::copy(ic, ic + nzmax, other_ic);
+	  std::copy(jc, jc + m.outerSize()+1, other_jc);
+     }
+     else {
+	  /*
+	   * Matrix not in compressed mode => pain in the #@!%#!
+	   *
+	   * Basically the problem is that the inner index array of the matrix
+	   * 'm' is not contiguous, it has holes:
+	   *    values: 22 7 _ 3 5 14 _ _ 1 _ 17 8	
+	   *    inner:   1 2 _ 0 2  4 _ _ 2 _  1 4
+	   *    outer:   0 3 5 8 10 12
+	   *    innz:    2 2 1 1 2
+	   * where _ are empty elements for fast insertion (cf. Eigen doc)
+	   *
+	   * And then we still need to correct the outer index array...
+	   *
+	   * Explanation of the variables below:
+	   * - i:     index in ret's inner index array
+	   * - o_idx: index in m's outer index array
+	   * - k:     index in m's inner index array
+	   */
+	  auto* inz = m.innerNonZeroPtr();
+	  e2m_assert(inz);
+	  size_t i(0);
+	  other_jc[0] = 0;
+	  for (int o_idx(0); o_idx < m.outerSize() ; ++o_idx) {
+	       const auto pe = jc[o_idx]+inz[o_idx];
+	       for (int k(jc[o_idx]) ; k < pe ; ++k, ++i) {
+		    other_values[i] = values[k];
+		    other_ic[i]     = ic[k];
+	       }
+	       other_jc[o_idx+1] = other_jc[o_idx] + inz[o_idx];
+	  }
+	  e2m_assert(i == nzmax);
+     }
      return ret;
 }
 
@@ -831,6 +921,7 @@ mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
 				     dims.data(),
 				     mxDOUBLE_CLASS,
 				     mxREAL);
+     e2m_assert(ret);
 
      auto* data = mxGetPr(ret);
      for (auto i(0UL) ; i < dims[2] ; ++i, data += mat_size) {
@@ -838,8 +929,8 @@ mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
      }
 
      return ret;
-}
 
+}
 // =====================================
 
 mxArray* eigen2mat::to_mxArray(const real_sp_cell_t& t)
@@ -852,11 +943,12 @@ mxArray* eigen2mat::to_mxArray(const real_sp_cell_t& t)
 mxArray* eigen2mat::to_mxArray(const cmplx_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxCOMPLEX);
+     e2m_assert(ret);
 
      auto real = mxGetPr(ret);
      auto imag = mxGetPi(ret);
-     myassert(real);
-     myassert(imag);
+     e2m_assert(real);
+     e2m_assert(imag);
 
      const auto S = v.size();
      const auto data = v.data();
@@ -872,11 +964,12 @@ mxArray* eigen2mat::to_mxArray(const cmplx_vector_t& v)
 mxArray* eigen2mat::to_mxArray(const cmplx_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxCOMPLEX);
+     e2m_assert(ret);
 
      auto real = mxGetPr(ret);
      auto imag = mxGetPi(ret);
-     myassert(real);
-     myassert(imag);
+     e2m_assert(real);
+     e2m_assert(imag);
 
      const auto S = v.size();
      const auto data = v.data();
@@ -896,11 +989,12 @@ mxArray* eigen2mat::to_mxArray(const cmplx_matrix_t& m)
      const size_t S = m.rows() * m.cols();
 
      auto ret = mxCreateDoubleMatrix(M, N, mxCOMPLEX);
+     e2m_assert(ret);
 
      auto real = mxGetPr(ret);
      auto imag = mxGetPi(ret);
-     myassert(real);
-     myassert(imag);
+     e2m_assert(real);
+     e2m_assert(imag);
 
      const auto data = m.data();
      for (auto i(0UL) ; i < S ;++i) {
@@ -921,18 +1015,64 @@ mxArray* eigen2mat::to_mxArray(const cmplx_sp_matrix_t& m)
      auto* values = m.valuePtr();
      auto* ic = m.innerIndexPtr();
      auto* jc = m.outerIndexPtr();
-
+     e2m_assert(values);
+     e2m_assert(ic);
+     e2m_assert(jc);
+	  
      auto* real = mxGetPr(ret);
      auto* imag = mxGetPi(ret);
-     myassert(real);
-     myassert(imag);
+     auto* other_ic = mxGetIr(ret);
+     auto* other_jc = mxGetJc(ret);
+     e2m_assert(real);
+     e2m_assert(imag);
+     e2m_assert(other_ic);
+     e2m_assert(other_jc);
 
-     for (auto i(0UL) ; i < nzmax ; ++i) {
-	  real[i] = values[i].real();
-	  imag[i] = values[i].imag();
+     e2m_assert(m.cols() == m.outerSize());
+     if (m.isCompressed()) {
+	  // matrix is compressed => easy !
+	  for (auto i(0UL) ; i < nzmax ; ++i) {
+	       real[i] = values[i].real();
+	       imag[i] = values[i].imag();
+	  }
+	  std::copy(ic, ic + nzmax, mxGetIr(ret));
+	  std::copy(jc, jc + m.outerSize()+1, mxGetJc(ret));
      }
-     std::copy(ic, ic + nzmax, mxGetIr(ret));
-     std::copy(jc, jc + m.outerSize()+1, mxGetJc(ret));
+     else {
+	  /*
+	   * Matrix not in compressed mode => pain in the #@!%#!
+	   *
+	   * Basically the problem is that the inner index array of the matrix
+	   * 'm' is not contiguous, it has holes:
+	   *    values: 22 7 _ 3 5 14 _ _ 1 _ 17 8	
+	   *    inner:   1 2 _ 0 2  4 _ _ 2 _  1 4
+	   *    outer:   0 3 5 8 10 12
+	   *    innz:    2 2 1 1 2
+	   * where _ are empty elements for fast insertion (cf. Eigen doc)
+	   *
+	   * And then we still need to correct the outer index array...
+	   *
+	   * Explanation of the variables below:
+	   * - i:     index in ret's inner index array
+	   * - o_idx: index in m's outer index array
+	   * - k:     index in m's inner index array
+	   */
+     	  auto* inz = m.innerNonZeroPtr();
+	  e2m_assert(inz);
+	  size_t i(0);
+	  other_jc[0] = 0;
+	  for (auto o_idx(0); o_idx < m.outerSize() ; ++o_idx) {
+	       const auto pe = jc[o_idx]+inz[o_idx];
+	       for (auto k(jc[o_idx]) ; k < pe ; ++k, ++i) {
+		    real[i] = values[k].real();
+		    imag[i] = values[k].imag();
+		    other_ic[i]     = ic[k];
+	       }
+	       other_jc[o_idx+1] = other_jc[o_idx] + inz[o_idx];
+	  }
+	  e2m_assert(i == nzmax);
+     }
+
      return ret;
 }
 
@@ -958,11 +1098,12 @@ mxArray* eigen2mat::to_mxArray(const cmplx_tensor_t& t)
 				     dims.data(),
 				     mxDOUBLE_CLASS,
 				     mxCOMPLEX);
+     e2m_assert(ret);
 
      auto* real = mxGetPr(ret);
      auto* imag = mxGetPi(ret);
-     myassert(real);
-     myassert(imag);
+     e2m_assert(real);
+     e2m_assert(imag);
 
      for (auto i(0UL) ; i < dims[2] ; ++i, real += mat_size, imag += mat_size) {
 	  auto* data = t[i].data();
@@ -1003,14 +1144,3 @@ CLANG_RESTORE_WARNINGS
 MSVC_RESTORE_WARNINGS
 
 
-
-eigen2mat::real_sp_matrix_t mafunction(const mxArray* a)
-{
-     eigen2mat::real_sp_matrix_t m = eigen2mat::mxArray_to_real_sp_matrix(a);
-     // eigen2mat::real_sp_matrix_t m(10, 7);
-     m.coeffRef(0,0) = 100000;
-     // m.makeCompressed();
-     m.coeffRef(m.rows()-1, m.cols()-1) = 10000;
-
-     return m;
-}

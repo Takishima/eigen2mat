@@ -10,9 +10,8 @@
 #ifndef MACROS_HPP_INCLUDED
 #define MACROS_HPP_INCLUDED
 
-#define concat(a, b) a # b
-#define myassert(x) \
-     mxAssert(x, concat(concat(_FILE__,":"),__LINE__)); \
+#define e2m_assert(x) \
+     mxAssert(x, "eigen2mat assertion failed"); \
      assert(x)
 
 // =============================================================================

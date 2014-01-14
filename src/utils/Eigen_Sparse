@@ -3,6 +3,8 @@
 
 #ifdef _MSC_VER
 #  pragma warning(push, 0)
+#else
+#  pragma GCC system_header
 #endif /* _MSC_VER */
 
 #include <vector>
@@ -12,7 +14,6 @@ namespace eigen2mat {
      class sparse_slice;
 } // namespace eigen2mat
 
-#pragma GCC system_header
 #include "Eigen/SparseCore"
 
 #ifdef _MSC_VER

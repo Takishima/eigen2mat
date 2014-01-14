@@ -13,8 +13,6 @@
 #include "definitions.hpp"
 #include "include_mex"
 
-eigen2mat::real_sp_matrix_t mafunction(const mxArray* a);
-
 namespace eigen2mat {
      // MATLAB to eigen2mat
      bool mxArray_to_bool(const mxArray* b);

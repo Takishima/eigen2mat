@@ -16,8 +16,6 @@
 #include "Eigen_Core"
 #include "Eigen_Sparse"
 
-#include "include_mex"
-
 #include <cassert>
 #include <vector>
 
@@ -181,15 +179,8 @@ namespace eigen2mat {
 
 	  for (Index j(0) ; j < csize ; ++j) {
 	       for (Index i(0) ; i < rsize ; ++i) {
-		    if (mat_->coeff(row_indices_[i], col_indices_[j]) != _Scalar(0)) {
-			 // mat_->coeffRef(row_indices_[i], col_indices_[j]);
-			 mexPrintf("(%d, %d) is NON-NULL\n", row_indices_[i], col_indices_[j]);
-		    }
-		    else {
-			 mexPrintf("(%d, %d) is an explicit 0\n", row_indices_[i], col_indices_[j]);
-		    }
-		    // mat_->coeffRef(row_indices_[i], col_indices_[j]) =
-		    // 	 other.coeff(i, j);
+		    mat_->coeffRef(row_indices_[i], col_indices_[j]) =
+		    	 other.coeff(i, j);
 	       }
 	  }
      }

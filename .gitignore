@@ -14,3 +14,9 @@
 
 # CMake build directories
 build*
+
+# MATLAB MEX files
+*.mexw32
+*.mexw64
+*.mexmaci32
+*.mexmaci64
