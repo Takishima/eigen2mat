@@ -128,16 +128,6 @@ endif()
 
 # ==============================================================================
 
-if( ${CMAKE_BUILD_TYPE} MATCHES "Debug" OR ${CMAKE_BUILD_TYPE} MATCHES "DEBUG" )
-  set( lib_suffix "d" )
-elseif( ${CMAKE_BUILD_TYPE} MATCHES "Release" OR ${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
-  set( lib_suffix "" )
-else()
-  set( lib_suffix "u" )
-endif()
-
-set( lib_name "eigen2mat${lib_suffix}")
-
 # Find out which git branch we are in
 # execute_process( COMMAND git rev-parse --abbrev-ref HEAD
 #   OUTPUT_VARIABLE git_branch_name 
@@ -163,14 +153,7 @@ include_directories( "${EIGEN3_INCLUDE_DIR}" )
 # ==============================================================================
 # Add sub-directories and include paths
 
-include_directories( ${eigen2mat_SOURCE_DIR}/src/inc )
-include_directories( ${eigen2mat_SOURCE_DIR}/src/plugins )
-include_directories( ${eigen2mat_SOURCE_DIR}/src/utils )
-
-# ==============================================================================
-# Add defines for Eigen plugins
-
-add_definitions( -DEIGEN_SPARSEMATRIX_PLUGIN="sparse_matrix_plugin.hpp" )
+include_directories( ${eigen2mat_SOURCE_DIR}/ )
 
 # ==============================================================================
 # Add doxygen target
@@ -197,11 +180,24 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 message(STATUS "Executable output path: ${EXECUTABLE_OUTPUT_PATH}" )
 
 add_library( eigen2mat_static STATIC
-  src/cpp/conversion.cpp
-  src/cpp/print.cpp
-  src/cpp/tensor_to_matrix.cpp
+  src/conversion.cpp
+  src/print.cpp
+  src/tensor_to_matrix.cpp
   )
-set_target_properties(eigen2mat_static PROPERTIES OUTPUT_NAME ${lib_name})
+set_target_properties(
+  eigen2mat_static 
+  PROPERTIES 
+  OUTPUT_NAME "eigen2matu"
+  OUTPUT_NAME_DEBUG "eigen2matd"
+  OUTPUT_NAME_RELEASE "eigen2mat"
+  )
+
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
+add_custom_command(
+  TARGET eigen2mat_static
+  PRE_LINK
+  COMMAND echo "NOTE: linking library in ${CMAKE_BUILD_TYPE} mode"
+  )
 
 add_executable( mytest test/test.cpp )
 target_link_libraries( mytest eigen2mat_static "${MATLAB_LIBRARIES}" )

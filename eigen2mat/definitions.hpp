@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef DEFINITIONS_HPP_INCLUDED
-#define DEFINITIONS_HPP_INCLUDED
+#ifndef EIGEN2MAT_DEFINITIONS_HPP_INCLUDED
+#define EIGEN2MAT_DEFINITIONS_HPP_INCLUDED
 
 #include <cstddef>
 
@@ -18,16 +18,16 @@
 #  define NULLPTR NULL
 #endif // WITH_CPP11
 
-#include "tensor_block.hpp"
-
-#include "Eigen_Core"
-#include "Eigen_Sparse"
+#include "eigen2mat/utils/Eigen_Core"
+#include "eigen2mat/utils/Eigen_Sparse"
+#include "eigen2mat/utils/forward_declarations.hpp"
 
 #include <array>
 #include <complex>
 #include <vector>
 
 namespace eigen2mat {
+namespace definitions {
      // Scalars
      typedef std::size_t size_t;
      typedef std::complex<double> dcomplex;
@@ -62,12 +62,14 @@ namespace eigen2mat {
      typedef Eigen::Block<const cmplx_matrix_t> const_cmplx_mblock_t;
 
      // Sparse matrices
-     typedef Eigen::SparseMatrix<double> real_sp_matrix_t;
-     typedef Eigen::SparseMatrix<dcomplex> cmplx_sp_matrix_t;
+     typedef Eigen::SparseMatrix<double,   0, int> real_sp_matrix_t;
+     typedef Eigen::SparseMatrix<dcomplex, 0, int> cmplx_sp_matrix_t;
 
-     // Sparse matrix blocks
+     // Sparse matrix blocks & slices
      typedef Eigen::Block<real_sp_matrix_t> real_spblock_t;
      typedef Eigen::Block<cmplx_sp_matrix_t> cmplx_spblock_t;
+     typedef sparse_slice<double,   0, int> real_spslice_t;
+     typedef sparse_slice<dcomplex, 0, int> cmplx_spslice_t;
 
      // Tensors
      typedef std::vector<real_matrix_t> real_tensor_t;
@@ -89,7 +91,13 @@ namespace eigen2mat {
      typedef Eigen::Map<real_vector_t> real_map_vec_t;
      typedef Eigen::Map<cmplx_vector_t> cmplx_map_vec_t;
      typedef Eigen::Map<real_matrix_t> real_map_mat_t;
-     typedef Eigen::Map<cmplx_matrix_t> cmplx_map_mat_t;
+     typedef Eigen::Map<cmplx_matrix_t> cmplx_map_mat_t;     
+} // namespace definitions
+
+     using namespace definitions;
 } // namespace eigen2mat
 
-#endif //DEFINITIONS_HPP_INCLUDED
+#include "tensor_block.hpp"
+#include "sparse_slice.hpp"
+
+#endif //EIGEN2MAT_DEFINITIONS_HPP_INCLUDED

@@ -1,4 +1,4 @@
-#include "macros.hpp"
+#include "eigen2mat/utils/macros.hpp"
 
 MSVC_IGNORE_WARNINGS(4018 4068 4244 4267 4800)
 
@@ -9,7 +9,7 @@ CLANG_IGNORE_WARNINGS_FOUR(-Wundefined-reinterpret-cast,	\
 
 // =============================================================================
 
-#include "conversion.hpp"
+#include "eigen2mat/conversion.hpp"
 
 #include <algorithm>
 

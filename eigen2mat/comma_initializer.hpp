@@ -12,9 +12,9 @@
 #ifndef COMMA_INITIALIZER_HPP_INCLUDED
 #define COMMA_INITIALIZER_HPP_INCLUDED
 
-#include "macros.hpp"
+#include "eigen2mat/utils/macros.hpp"
 
-#include "Eigen_Core"
+#include "eigen2mat/utils/Eigen_Core"
 
 #include <cassert>
 

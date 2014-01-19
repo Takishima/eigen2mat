@@ -10,8 +10,8 @@
 #ifndef CONVERSION_HPP_INCLUDED
 #define CONVERSION_HPP_INCLUDED
 
-#include "definitions.hpp"
-#include "include_mex"
+#include "eigen2mat/definitions.hpp"
+#include "eigen2mat/utils/include_mex"
 
 namespace eigen2mat {
      // MATLAB to eigen2mat

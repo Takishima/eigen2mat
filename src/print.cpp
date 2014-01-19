@@ -1,7 +1,7 @@
-#include "print.hpp"
-#include "macros.hpp"
+#include "eigen2mat/print.hpp"
+#include "eigen2mat/utils/macros.hpp"
 
-#include "include_mex"
+#include "eigen2mat/utils/include_mex"
 
 CLANG_IGNORE_WARNINGS_TWO(-Wsign-compare,-Wsign-conversion)
 

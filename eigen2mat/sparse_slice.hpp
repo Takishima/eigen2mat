@@ -10,11 +10,11 @@
 #ifndef SPARSE_SLICE_HPP_INCLUDED
 #define SPARSE_SLICE_HPP_INCLUDED
 
-#include "macros.hpp"
-#include "comma_initializer.hpp"
+#include "eigen2mat/utils/macros.hpp"
+#include "eigen2mat/comma_initializer.hpp"
 
-#include "Eigen_Core"
-#include "Eigen_Sparse"
+#include "eigen2mat/utils/Eigen_Core"
+#include "eigen2mat/utils/Eigen_Sparse"
 
 #include <cassert>
 #include <vector>

@@ -1,7 +1,7 @@
-#include "tensor_to_matrix.hpp"
-#include "macros.hpp"
+#include "eigen2mat/tensor_to_matrix.hpp"
+#include "eigen2mat/utils/macros.hpp"
 
-#include "include_mex"
+#include "eigen2mat/utils/include_mex"
 
 CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
 

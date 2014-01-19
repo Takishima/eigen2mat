@@ -10,7 +10,8 @@
 #ifndef TENSOR_BLOCK_HPP_INCLUDED
 #define TENSOR_BLOCK_HPP_INCLUDED
 
-#include "include_mex"
+#include "eigen2mat/utils/macros.hpp"
+#include "eigen2mat/utils/include_mex"
 
 #include <vector>
 
@@ -31,6 +32,8 @@ namespace eigen2mat {
 			 size_t n_mat)
 	       : begin_(t.begin() + start), end_(t.begin() + start + n_mat)
 	       {}
+
+	  CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
 
 	  value_type& operator[] (size_t k)
 	       { 
@@ -54,6 +57,8 @@ namespace eigen2mat {
 	       }
 
 	  size_t size() const {return (end_ - begin_);}
+
+	  CLANG_RESTORE_WARNINGS
 
      private:
 	  const iterator begin_;

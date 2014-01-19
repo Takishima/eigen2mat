@@ -4,13 +4,12 @@
 #include <iostream>
 #include <iomanip>
 
-#include "Eigen_Sparse"
-#include "include_mex"
+#include "eigen2mat/utils/Eigen_Sparse"
+#include "eigen2mat/utils/include_mex"
 
-#include "conversion.hpp"
-// #include "sys_t.hpp"
-#include "print.hpp"
-#include "sparse_slice.hpp"
+#include "eigen2mat/conversion.hpp"
+#include "eigen2mat/print.hpp"
+#include "eigen2mat/sparse_slice.hpp"
 
 #define EIGEN2MAT_NO_MATLAB
 

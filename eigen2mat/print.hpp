@@ -10,7 +10,7 @@
 #ifndef PRINT_HPP_INCLUDED
 #define PRINT_HPP_INCLUDED
 
-#include "definitions.hpp"
+#include "eigen2mat/definitions.hpp"
 
 #include <string>
 
