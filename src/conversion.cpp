@@ -13,6 +13,8 @@ CLANG_IGNORE_WARNINGS_FOUR(-Wundefined-reinterpret-cast,	\
 
 #include <algorithm>
 
+namespace e2m = eigen2mat;
+
 // =============================================================================
 
 template <typename T>
@@ -745,7 +747,7 @@ mxArray* eigen2mat::to_mxArray(int i)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(size_t idx)
+mxArray* eigen2mat::to_mxArray(e2m::size_t idx)
 {
      auto ret = mxCreateNumericMatrix(1, 1, mxUINT32_CLASS, mxREAL);
      e2m_assert(ret);
@@ -757,7 +759,7 @@ mxArray* eigen2mat::to_mxArray(size_t idx)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const dcomplex& z)
+mxArray* eigen2mat::to_mxArray(const e2m::dcomplex& z)
 {
      auto ret = mxCreateDoubleMatrix(1, 1, mxCOMPLEX);
      e2m_assert(ret);
@@ -769,7 +771,7 @@ mxArray* eigen2mat::to_mxArray(const dcomplex& z)
 
 // =============================================================================
 
-mxArray* eigen2mat::to_mxArray(const idx_array_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::idx_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxUINT32_CLASS, mxREAL);
      e2m_assert(ret);
@@ -784,7 +786,7 @@ mxArray* eigen2mat::to_mxArray(const idx_array_t& v)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const int_array_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::int_array_t& v)
 {
      auto ret = mxCreateNumericMatrix(v.size(), 1, mxINT32_CLASS, mxREAL);
      e2m_assert(ret);
@@ -800,7 +802,7 @@ mxArray* eigen2mat::to_mxArray(const int_array_t& v)
 
 // =============================================================================
 
-mxArray* eigen2mat::to_mxArray(const real_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::real_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxREAL);
      e2m_assert(ret);
@@ -811,7 +813,7 @@ mxArray* eigen2mat::to_mxArray(const real_vector_t& v)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const real_row_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::real_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxREAL);
      e2m_assert(ret);
@@ -822,7 +824,7 @@ mxArray* eigen2mat::to_mxArray(const real_row_vector_t& v)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const real_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const e2m::real_matrix_t& m)
 {
      const auto M = m.rows();
      const auto N = m.cols();
@@ -836,7 +838,7 @@ mxArray* eigen2mat::to_mxArray(const real_matrix_t& m)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const real_sp_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const e2m::real_sp_matrix_t& m)
 
 {
      const size_t nzmax = m.nonZeros();
@@ -901,7 +903,7 @@ mxArray* eigen2mat::to_mxArray(const real_sp_matrix_t& m)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
+mxArray* eigen2mat::to_mxArray(const e2m::real_tensor_t& t)
 {
      dim_array_t dims;
      dims.fill(0);
@@ -933,14 +935,14 @@ mxArray* eigen2mat::to_mxArray(const real_tensor_t& t)
 }
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const real_sp_cell_t& t)
+mxArray* eigen2mat::to_mxArray(const e2m::real_sp_cell_t& t)
 {
-     return to_1Dcell_array_helper<real_sp_cell_t>(t);
+     return to_1Dcell_array_helper<e2m::real_sp_cell_t>(t);
 }
 
 // =============================================================================
 
-mxArray* eigen2mat::to_mxArray(const cmplx_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxCOMPLEX);
      e2m_assert(ret);
@@ -961,7 +963,7 @@ mxArray* eigen2mat::to_mxArray(const cmplx_vector_t& v)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const cmplx_row_vector_t& v)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_row_vector_t& v)
 {
      auto ret = mxCreateDoubleMatrix(1, v.cols(), mxCOMPLEX);
      e2m_assert(ret);
@@ -982,7 +984,7 @@ mxArray* eigen2mat::to_mxArray(const cmplx_row_vector_t& v)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const cmplx_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_matrix_t& m)
 {
      const size_t M = m.rows();
      const size_t N = m.cols();
@@ -1007,7 +1009,7 @@ mxArray* eigen2mat::to_mxArray(const cmplx_matrix_t& m)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const cmplx_sp_matrix_t& m)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_sp_matrix_t& m)
 {
      const size_t nzmax = m.nonZeros();
      auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxCOMPLEX);
@@ -1078,7 +1080,7 @@ mxArray* eigen2mat::to_mxArray(const cmplx_sp_matrix_t& m)
 
 // =====================================
 
-mxArray* eigen2mat::to_mxArray(const cmplx_tensor_t& t)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_tensor_t& t)
 {
      dim_array_t dims;
      dims.fill(0);
@@ -1116,9 +1118,9 @@ mxArray* eigen2mat::to_mxArray(const cmplx_tensor_t& t)
      return ret;
 }
 
-mxArray* eigen2mat::to_mxArray(const cmplx_sp_cell_t& t)
+mxArray* eigen2mat::to_mxArray(const e2m::cmplx_sp_cell_t& t)
 {
-     return to_1Dcell_array_helper<cmplx_sp_cell_t>(t);
+     return to_1Dcell_array_helper<e2m::cmplx_sp_cell_t>(t);
 }
 
 // #############################################################################

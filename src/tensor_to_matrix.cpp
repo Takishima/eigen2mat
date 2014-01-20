@@ -3,11 +3,13 @@
 
 #include "eigen2mat/utils/include_mex"
 
+namespace e2m = eigen2mat;
+
 CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
 
 template <typename matrix_t>
 matrix_t tensor_to_matrix_helper(const std::vector<matrix_t>& t,
-				 eigen2mat::DIR_T dim,
+				 e2m::DIR_T dim,
 				 size_t idx)
 {
      const auto P = t.size();
@@ -46,50 +48,53 @@ matrix_t tensor_to_matrix_helper(const std::vector<matrix_t>& t,
 
 // =====================================
 
-eigen2mat::real_matrix_t eigen2mat::tensor_to_matrix(const real_tensor_t& t, DIR_T dim, size_t idx)
+eigen2mat::real_matrix_t eigen2mat::tensor_to_matrix(const e2m::real_tensor_t& t, 
+						     e2m::DIR_T dim, 
+						     e2m::size_t idx)
 {
-     return tensor_to_matrix_helper<real_matrix_t>(t, dim, idx);
+     return tensor_to_matrix_helper<e2m::real_matrix_t>(t, dim, idx);
 }
 
 // =====================================
 
-eigen2mat::cmplx_matrix_t eigen2mat::tensor_to_matrix(const cmplx_tensor_t& t, DIR_T dim, size_t idx)
+eigen2mat::cmplx_matrix_t eigen2mat::tensor_to_matrix(const e2m::cmplx_tensor_t& t, 
+						      e2m::DIR_T dim, 
+						      e2m::size_t idx)
 {
-     return tensor_to_matrix_helper<cmplx_matrix_t>(t, dim, idx);
+     return tensor_to_matrix_helper<e2m::cmplx_matrix_t>(t, dim, idx);
 }
 
 // =============================================================================
 
 template <typename matrix_t>
 void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
-				eigen2mat::DIR_T dim_lhs,
-				eigen2mat::size_t idx_lhs,
+				e2m::DIR_T dim_lhs,
+				e2m::size_t idx_lhs,
 				const std::vector<matrix_t>& t_rhs,
-				eigen2mat::DIR_T dim_rhs,
-				eigen2mat::size_t idx_rhs)
+				e2m::DIR_T dim_rhs,
+				e2m::size_t idx_rhs)
 {
-     const size_t P_lhs = t_lhs.size();
-     const size_t P_rhs = t_rhs.size();
+     const e2m::size_t P_lhs = t_lhs.size();
+     const e2m::size_t P_rhs = t_rhs.size();
 
      if (P_lhs == 0 || P_rhs == 0) {
 	  // if either tensor has no elements, do nothing
 	  return;
      }
 
-
-     const size_t M_lhs = t_lhs[0].rows();
-     const size_t N_lhs = t_lhs[0].cols();
+     const e2m::size_t M_lhs = t_lhs[0].rows();
+     const e2m::size_t N_lhs = t_lhs[0].cols();
 
 #ifndef NDEBUG
-     const size_t M_rhs = t_rhs[0].rows();
-     const size_t N_rhs = t_rhs[0].cols();     
+     const e2m::size_t M_rhs = t_rhs[0].rows();
+     const e2m::size_t N_rhs = t_rhs[0].cols();     
 #endif /* NDEBUG */
 
-     if (dim_lhs == eigen2mat::Z && dim_rhs == eigen2mat::Z) {
+     if (dim_lhs == e2m::Z && dim_rhs == e2m::Z) {
 	  assert(M_lhs == M_rhs && N_lhs == N_rhs);
 	  t_lhs[idx_lhs] = t_rhs[idx_rhs];
      }
-     else if (dim_lhs == eigen2mat::X && dim_rhs == eigen2mat::X) {
+     else if (dim_lhs == e2m::X && dim_rhs == e2m::X) {
 	  // t_lhs(i1, :, :) = t_rhs(i2, :, :);
 	  assert(N_lhs == N_rhs && P_lhs == P_rhs);
 	  for (auto j(0UL); j < N_lhs; ++j) {
@@ -98,7 +103,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
 	       }
 	  }
      }
-     else if (dim_lhs == eigen2mat::Y && dim_rhs == eigen2mat::Y) {
+     else if (dim_lhs == e2m::Y && dim_rhs == e2m::Y) {
 	  // t_lhs(:, i1, :) = t_rhs(:, i2, :);
 	  assert(M_lhs == M_rhs && P_lhs == P_rhs);
 	  for (auto i(0UL); i < M_lhs; ++i) {
@@ -112,7 +117,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      }
 
 
-     // else if (dim_lhs == eigen2mat::X && dim_rhs == eigen2mat::Z) {
+     // else if (dim_lhs == e2m::X && dim_rhs == e2m::Z) {
      //		  // t_lhs(i1, :, :) = t_rhs(:,:,i2);
      //		  assert(N_lhs == M_rhs && P_lhs == N_rhs);
      //		  auto& mat = t_rhs[idx_rhs];
@@ -122,7 +127,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      //		       }
      //		  }
      // }
-     // else if (dim_lhs == eigen2mat::Y && dim_rhs == eigen2mat::Z) {
+     // else if (dim_lhs == e2m::Y && dim_rhs == e2m::Z) {
      //		  // t_lhs(:, i1, :) = t_rhs(:,:,i2);
      //		  assert(M_lhs == M_rhs && P_lhs == N_rhs);
      //		  auto& mat = t_rhs[idx_rhs];
@@ -132,7 +137,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      //		       }
      //		  }
      // }
-     // else if (dim_lhs == eigen2mat::Z && dim_rhs == eigen2mat::X) {
+     // else if (dim_lhs == e2m::Z && dim_rhs == e2m::X) {
      //		  // t_lhs(:, :, i1) = t_rhs(i1, :, :);
      //		  assert(M_lhs == N_rhs && N_lhs == P_rhs);
      //		  auto& mat = t_lhs[idx_lhs];
@@ -142,7 +147,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      //		       }
      //		  }
      // }
-     // else if (dim_lhs ==  eigen2mat::Z && dim_rhs == eigen2mat::Y) {
+     // else if (dim_lhs ==  e2m::Z && dim_rhs == e2m::Y) {
      //		  // t_lhs(:, :, i1) = t_rhs(:, i1, :);
      //		  assert(M_lhs == M_rhs && N_lhs == P_rhs);
      //		  auto& mat = t_lhs[idx_lhs];
@@ -152,7 +157,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      //		       }
      //		  }
      // }
-     // else if (dim_lhs == eigen2mat::X && dim_rhs == eigen2mat::Y) {
+     // else if (dim_lhs == e2m::X && dim_rhs == e2m::Y) {
      //		  // t_lhs(i1, :, :) = t_rhs(:, i2, :);
      //		  assert(N_lhs == M_rhs && P_lhs == P_rhs);
      //		  for (auto j(0UL); j < N_lhs; ++j) {
@@ -162,7 +167,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      //		  }
      // }
      // else {
-     //		  // dim_lhs == eigen2mat::Y && dim_rhs == eigen2mat::X
+     //		  // dim_lhs == e2m::Y && dim_rhs == e2m::X
      //		  // t_lhs(:, i1, :) = t_rhs(i2, :, :);
      //		  assert(M_lhs == N_rhs && P_lhs == P_rhs);
      //		  for (auto j(0UL); j < M_lhs; ++j) {
@@ -175,8 +180,8 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
 
 // =====================================
 
-void eigen2mat::tensor_slice_assign(real_tensor_t& t_lhs, DIR_T dim_lhs, size_t idx_lhs,
-				const real_tensor_t& t_rhs, DIR_T dim_rhs, size_t idx_rhs)
+void e2m::tensor_slice_assign(e2m::real_tensor_t& t_lhs, e2m::DIR_T dim_lhs, e2m::size_t idx_lhs,
+			      const e2m::real_tensor_t& t_rhs, e2m::DIR_T dim_rhs, e2m::size_t idx_rhs)
 {
      tensor_slice_assign_helper<real_matrix_t>(t_lhs, dim_lhs, idx_lhs,
 					       t_rhs, dim_rhs, idx_rhs);
@@ -184,8 +189,8 @@ void eigen2mat::tensor_slice_assign(real_tensor_t& t_lhs, DIR_T dim_lhs, size_t 
 
 // =====================================
 
-void eigen2mat::tensor_slice_assign(cmplx_tensor_t& t_lhs, DIR_T dim_lhs, size_t idx_lhs,
-				const cmplx_tensor_t& t_rhs, DIR_T dim_rhs, size_t idx_rhs)
+void e2m::tensor_slice_assign(e2m::cmplx_tensor_t& t_lhs, e2m::DIR_T dim_lhs, e2m::size_t idx_lhs,
+			      const e2m::cmplx_tensor_t& t_rhs, e2m::DIR_T dim_rhs, e2m::size_t idx_rhs)
 {
      tensor_slice_assign_helper<cmplx_matrix_t>(t_lhs, dim_lhs, idx_lhs,
 						t_rhs, dim_rhs, idx_rhs);
@@ -195,8 +200,8 @@ void eigen2mat::tensor_slice_assign(cmplx_tensor_t& t_lhs, DIR_T dim_lhs, size_t
 
 template <typename matrix_t>
 void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
-				eigen2mat::DIR_T dim_lhs,
-				eigen2mat::size_t idx_lhs,
+				e2m::DIR_T dim_lhs,
+				e2m::size_t idx_lhs,
 				const matrix_t& m_rhs)
 {
      const size_t P_lhs = t_lhs.size();
@@ -214,12 +219,12 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
      const size_t N_rhs = m_rhs.cols();     
 #endif /* NDEBUG */
      
-     if (dim_lhs == eigen2mat::Z) {
+     if (dim_lhs == e2m::Z) {
 	  // t_lhs(:, :, i1) = m_rhs(:, :);
 	  assert(M_lhs == M_rhs && N_lhs == N_rhs);
 	  t_lhs[idx_lhs] = m_rhs;
      }
-     else if (dim_lhs == eigen2mat::X) {
+     else if (dim_lhs == e2m::X) {
 	  // t_lhs(i1, :, :) = m_rhs(:, :);
 	  assert(N_lhs == N_rhs && P_lhs == M_rhs);
 	  for (auto j(0UL); j < N_lhs; ++j) {
@@ -228,7 +233,7 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
 	       }
 	  }
      }
-     else if (dim_lhs == eigen2mat::Y) {
+     else if (dim_lhs == e2m::Y) {
 	  // t_lhs(:, i1, :) = m_rhs(:, :);
 	  assert(M_lhs == M_rhs && P_lhs == M_rhs);
 	  for (auto i(0UL); i < M_lhs; ++i) {
@@ -243,16 +248,16 @@ void tensor_slice_assign_helper(std::vector<matrix_t>& t_lhs,
 }
 // =====================================
 
-void eigen2mat::tensor_slice_assign(real_tensor_t& t_lhs, DIR_T dim_lhs, size_t idx_lhs,
-				const real_matrix_t& m_rhs)
+void e2m::tensor_slice_assign(e2m::real_tensor_t& t_lhs, e2m::DIR_T dim_lhs, e2m::size_t idx_lhs,
+			      const e2m::real_matrix_t& m_rhs)
 {
      tensor_slice_assign_helper(t_lhs, dim_lhs, idx_lhs, m_rhs);
 }
 
 // =====================================
 
-void eigen2mat::tensor_slice_assign(cmplx_tensor_t& t_lhs, DIR_T dim_lhs, size_t idx_lhs,
-				const cmplx_matrix_t& m_rhs)
+void e2m::tensor_slice_assign(e2m::cmplx_tensor_t& t_lhs, e2m::DIR_T dim_lhs, e2m::size_t idx_lhs,
+			      const e2m::cmplx_matrix_t& m_rhs)
 {
      tensor_slice_assign_helper(t_lhs, dim_lhs, idx_lhs, m_rhs);
 }

@@ -46,6 +46,14 @@ namespace eigen2mat {
 	  sparse_slice(matrix_t& m,
 		       std::vector<Index> row_indices,
 		       std::vector<Index> col_indices);
+
+	  sparse_slice(matrix_t& m,
+		       Index row,
+		       std::vector<Index> col_indices);
+	  sparse_slice(matrix_t& m,
+		       std::vector<Index> row_indices,
+		       Index col);
+	  sparse_slice(matrix_t& m, Index row, Index col);
 	  
 	  inline Index matrix_rows() const { return row_size_; }
 	  inline Index matrix_cols() const { return col_size_; }
@@ -135,6 +143,11 @@ namespace eigen2mat {
 	  template <typename T>
 	  void assign_helper_(const T& other);
 
+#ifdef EIGEN2MAT_RANGE_CHECK
+	  void init_range_check_();
+#endif /* EIGEN2MAT_RANGE_CHECK */
+
+
 	  matrix_t* mat_;
 
 	  // const typename XprType::Nested mat_;
@@ -148,6 +161,24 @@ namespace eigen2mat {
 
      MSVC_IGNORE_WARNINGS(4267)
 
+#ifdef EIGEN2MAT_RANGE_CHECK
+     template <typename _Scalar, int _Options, typename _Index>
+     sparse_slice<_Scalar, _Option, _Index>::init_range_check_()
+     {
+	  for (auto i(0UL) ; i < row_indices_.size() ; ++i) {
+	       if (row_indices_[i] > row_size_) {
+		    throw std::out_of_range("sparse_slice: got row index out-of-range");
+	       }
+	  }
+	  for (auto i(0UL) ; i < col_indices_.size() ; ++i) {
+	       if (col_indices_[i] > col_size_) {
+		    throw std::out_of_range("sparse_slice: got outer index out-of-range");
+	       }
+	  }
+     }
+#endif /* EIGEN2MAT_RANGE_CHECK */
+
+     
      template<typename _Scalar, int _Options, typename _Index>
      sparse_slice<_Scalar, _Options, _Index>::sparse_slice(
 	  matrix_t& m,
@@ -160,18 +191,57 @@ namespace eigen2mat {
 	    col_indices_(col_indices)
      {
 #ifdef EIGEN2MAT_RANGE_CHECK
-	  for (auto i(0UL) ; i < row_indices_.size() ; ++i) {
-	       if (row_indices_[i] > row_size_) {
-		    throw std::out_of_range("sparse_slice: got row index out-of-range");
-	       }
-	  }
-	  for (auto i(0UL) ; i < col_indices_.size() ; ++i) {
-	       if (col_indices_[i] > col_size_) {
-		    throw std::out_of_range("sparse_slice: got outer index out-of-range");
-	       }
-	  }
+	  init_range_check_();
 #endif /* EIGEN2MAT_RANGE_CHECK */
      }
+
+     template<typename _Scalar, int _Options, typename _Index>
+     sparse_slice<_Scalar, _Options, _Index>::sparse_slice(
+	  matrix_t& m,
+	  Index row,
+	  std::vector<Index> col_indices)
+	  : mat_(&m),
+	    row_size_(1),
+	    col_size_(m.cols()),
+	    row_indices_(row, 1),
+	    col_indices_(col_indices)
+     {
+#ifdef EIGEN2MAT_RANGE_CHECK
+	  init_range_check_();
+#endif /* EIGEN2MAT_RANGE_CHECK */
+     }
+     template<typename _Scalar, int _Options, typename _Index>
+     sparse_slice<_Scalar, _Options, _Index>::sparse_slice(
+	  matrix_t& m,
+	  std::vector<Index> row_indices,
+	  Index col)
+	  : mat_(&m),
+	    row_size_(m.rows()),
+	    col_size_(1),
+	    row_indices_(row_indices),
+	    col_indices_(col, 1)
+     {
+#ifdef EIGEN2MAT_RANGE_CHECK
+	  init_range_check_();
+#endif /* EIGEN2MAT_RANGE_CHECK */
+     }
+
+     template<typename _Scalar, int _Options, typename _Index>
+     sparse_slice<_Scalar, _Options, _Index>::sparse_slice(
+	  matrix_t& m, 
+	  Index row, 
+	  Index col)
+	  : mat_(&m),
+	    row_size_(1),
+	    col_size_(1),
+	    row_indices_(row, 1),
+	    col_indices_(col, 1)
+     {
+#ifdef EIGEN2MAT_RANGE_CHECK
+	  init_range_check_();
+#endif /* EIGEN2MAT_RANGE_CHECK */
+     }
+
 
      template<typename _Scalar, int _Options, typename _Index>
      template <typename T>

@@ -16,6 +16,8 @@
 #include <vector>
 
 namespace eigen2mat {
+     CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
+
      template <typename tensor_t>
      class tensor_block_t
      {
@@ -32,8 +34,6 @@ namespace eigen2mat {
 			 size_t n_mat)
 	       : begin_(t.begin() + start), end_(t.begin() + start + n_mat)
 	       {}
-
-	  CLANG_IGNORE_WARNINGS_ONE(-Wsign-conversion)
 
 	  value_type& operator[] (size_t k)
 	       { 
