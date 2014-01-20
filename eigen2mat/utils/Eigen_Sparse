@@ -7,7 +7,7 @@
 #  pragma GCC system_header
 #endif /* _MSC_VER */
 
-#include "eigen_plugins.hpp"
+#include "eigen2mat/utils/eigen_plugins.hpp"
 
 #include <vector>
 

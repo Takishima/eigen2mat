@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project (eigen2mat)
+project( eigen2mat CXX )
 
 # Set those variable if CMake is not able to find Matlab & Eigen
 #set( MATLAB_ROOT "C:\\Program Files\\MATLAB\\R2012b" )
@@ -176,6 +176,8 @@ include_directories( ${eigen2mat_SOURCE_DIR}/ )
 
 # ==============================================================================
 
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
+
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 message(STATUS "Executable output path: ${EXECUTABLE_OUTPUT_PATH}" )
 
@@ -192,7 +194,6 @@ set_target_properties(
   OUTPUT_NAME_RELEASE "eigen2mat"
   )
 
-string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 add_custom_command(
   TARGET eigen2mat_static
   PRE_LINK

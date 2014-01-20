@@ -12,6 +12,7 @@
 
 #include "eigen2mat/utils/macros.hpp"
 #include "eigen2mat/comma_initializer.hpp"
+#include "eigen2mat/sparse_slice_op.hpp"
 
 #include "eigen2mat/utils/Eigen_Core"
 #include "eigen2mat/utils/Eigen_Sparse"
@@ -27,7 +28,7 @@ MSVC_IGNORE_WARNINGS(4267)
 CLANG_IGNORE_WARNINGS_TWO(-Wshorten-64-to-32,-Wsign-conversion)
 
 namespace eigen2mat {
-     template<typename _Scalar, int _Options, typename _Index> 
+     template<typename _Scalar, int _Options, typename _Index>
      class sparse_slice
      {
      public:
@@ -45,7 +46,7 @@ namespace eigen2mat {
 	  sparse_slice(matrix_t& m,
 		       std::vector<Index> row_indices,
 		       std::vector<Index> col_indices);
-
+	  
 	  inline Index matrix_rows() const { return row_size_; }
 	  inline Index matrix_cols() const { return col_size_; }
 
@@ -54,9 +55,9 @@ namespace eigen2mat {
 	  inline Index outerSize() const
 	       {return IsRowMajor ? row_size_ : col_size_;}
 
-	  inline Index rows() const 
+	  inline Index rows() const
 	       { return row_indices_.size(); }
-	  inline Index cols() const 
+	  inline Index cols() const
 	       { return col_indices_.size(); }
 
 	  inline Index innerSliceSize() const
@@ -64,14 +65,19 @@ namespace eigen2mat {
 	  inline Index outerSliceSize() const
 	       {return IsRowMajor ? row_indices_.size() : col_indices_.size();}
 
+	  binary_op_wrapper_t<self_t> array()
+	       { return binary_op_wrapper_t<self_t>(*this); }
+	  binary_op_wrapper_t<const self_t> array() const
+	       { return binary_op_wrapper_t<const self_t>(*this); }
+
 	  Scalar coeff(Index row, Index col) const
-	       { 
+	       {
 		    assert(mat_);
 		    return mat_->coeff(row_indices_[row], col_indices_[col]);
 	       }
 
 	  Scalar& coeffRef(Index row, Index col) const
-	       { 
+	       {
 		    assert(mat_);
 		    return mat_->coeffRef(row_indices_[row], col_indices_[col]);
 	       }
@@ -84,19 +90,34 @@ namespace eigen2mat {
 	       }
 
 	  /** For Eigen::Matrix */
-	  template <int _Rows, int _Cols, int _Options2, int _MaxRows, int _MaxCols>
-	  self_t& operator= (const Eigen::Matrix<
-			     _Scalar,
-			     _Rows,
-			     _Cols,
-			     _Options2,
-			     _MaxRows,
-			     _MaxCols>& rhs)
+	  template <typename Derived>
+	  self_t& operator= (const Eigen::DenseBase<Derived>& rhs)
 	       {
 		    assign_helper_(rhs);
 		    return *this;
 	       }
 
+	  // /** For Eigen::Matrix */
+	  // template <int _Rows, int _Cols, int _Options2, int _MaxRows, int _MaxCols>
+	  // self_t& operator= (const Eigen::Matrix<
+	  // 		     _Scalar,
+	  // 		     _Rows,
+	  // 		     _Cols,
+	  // 		     _Options2,
+	  // 		     _MaxRows,
+	  // 		     _MaxCols>& rhs)
+	  //      {
+	  // 	    assign_helper_(rhs);
+	  // 	    return *this;
+	  //      }
+
+	  /** For Cwise operations with other slices */
+	  template <typename lhs_t, typename rhs_t, typename binary_op_t>
+	  self_t& operator= (const cwise_binary_op<lhs_t, rhs_t, binary_op_t>& op)
+	       {
+		    assign_helper_(op);
+		    return *this;
+	       }
 
 	  comma_initializer<sparse_slice> operator<< (
 	       const Scalar& s)
@@ -117,14 +138,14 @@ namespace eigen2mat {
 	  matrix_t* mat_;
 
 	  // const typename XprType::Nested mat_;
-	  
+
 	  const Index row_size_;
 	  const Index col_size_;
-	  
+
 	  const std::vector<Index> row_indices_;
 	  const std::vector<Index> col_indices_;
      };
-     
+
      MSVC_IGNORE_WARNINGS(4267)
 
      template<typename _Scalar, int _Options, typename _Index>
@@ -132,9 +153,9 @@ namespace eigen2mat {
 	  matrix_t& m,
 	  std::vector<Index> row_indices,
 	  std::vector<Index> col_indices)
-	  : mat_(&m), 
+	  : mat_(&m),
 	    row_size_(m.rows()),
-	    col_size_(m.cols()), 
+	    col_size_(m.cols()),
 	    row_indices_(row_indices),
 	    col_indices_(col_indices)
      {

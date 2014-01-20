@@ -11,7 +11,7 @@
 #include "eigen2mat/print.hpp"
 #include "eigen2mat/sparse_slice.hpp"
 
-#define EIGEN2MAT_NO_MATLAB
+//#define EIGEN2MAT_NO_MATLAB
 
 #ifdef EIGEN2MAT_NO_MATLAB
 #  include <cstdio>
@@ -47,15 +47,33 @@ int main(int /*argc*/, char** /*argv*/)
      mat.insert(3,1) = dcomplex(31, 0);
      mat.insert(4,4) = dcomplex(42, 0);
      mat.makeCompressed();
+     eigen2mat::print("====================");
+     eigen2mat::print("initial matrix:");
      eigen2mat::print(mat);
-     eigen2mat::print("=================");
-
-     mat.coeffRef(9, 6) = 100000;
+     eigen2mat::print("====================");
+     eigen2mat::print("assigning to slice using slice.coeffRef():");
 
      std::vector<int> rows(2); rows[0] = 1; rows[1] = 5;
      std::vector<int> cols(2); cols[0] = 5; cols[1] = 6;
 
      auto slice = mat.slice(rows, cols);    
+
+     slice.coeffRef(0, 0) = 10;
+     slice.coeffRef(1, 0) = 110;
+     slice.coeffRef(0, 1) = 11;
+     slice.coeffRef(1, 1) = 111;
+
+     eigen2mat::print(mat);
+     eigen2mat::print("====================");
+     eigen2mat::print("assigning to slice with operator<< (scalars):");
+
+     // slice = m;
+     slice << 1, 2,
+	      3, 4;
+
+     eigen2mat::print(mat);
+     eigen2mat::print("====================");
+     eigen2mat::print("assigning to slice with operator<< (matrices):");
 
      Eigen::MatrixXcd m = Eigen::MatrixXcd::Ones(2,1);
      Eigen::MatrixXcd m2 = Eigen::MatrixXcd::Ones(2,1);
@@ -66,34 +84,37 @@ int main(int /*argc*/, char** /*argv*/)
      m2 << 4,
 	  8;
 
-     slice.coeffRef(0, 0) = 10;
-     slice.coeffRef(1, 0) = 110;
-     slice.coeffRef(0, 1) = 11;
-     slice.coeffRef(1, 1) = 111;
-
-     eigen2mat::print(mat);
-     eigen2mat::print("=================");
-
-     // slice = m;
-     slice << 1, 2,
-	      3, 4;
-
-     eigen2mat::print(mat);
-     eigen2mat::print("=================");
-
      std::cout << std::flush;
      res << m, m2;
      eigen2mat::print(res);
-     eigen2mat::print("=================");
-     eigen2mat::print("=================");
+
+     eigen2mat::print("--------------------");
 
      slice << m, m2;
 
      eigen2mat::print(mat);
-     eigen2mat::print("=================");
+     eigen2mat::print("====================");
+     eigen2mat::print("testing slice.array() methods:");
 
+     slice = slice.array() + (7*Eigen::MatrixXcd::Ones(2,2));
 
-     // std::cin.get();
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice = slice.array() - (7*Eigen::MatrixXcd::Ones(2,2));
+
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice = slice.array() * (2*Eigen::MatrixXcd::Ones(2,2));
+
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice = slice.array() / (2*Eigen::MatrixXcd::Ones(2,2));
+
+     eigen2mat::print(mat);
+     eigen2mat::print("====================");
 
      return 0;
 }
