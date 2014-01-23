@@ -842,7 +842,11 @@ mxArray* eigen2mat::to_mxArray(const e2m::real_sp_matrix_t& m)
 
 {
      const size_t nzmax = m.nonZeros();
-     auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxREAL);
+     mxArray* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxREAL);
+
+     if (m.rows() == 0 || m.cols() == 0) {
+	  return ret;
+     }
 
      auto* values = m.valuePtr();
      auto* ic = m.innerIndexPtr();
@@ -909,14 +913,14 @@ mxArray* eigen2mat::to_mxArray(const e2m::real_tensor_t& t)
      dims.fill(0);
      dims[2] = t.size();
 
-#ifdef EIGEN2MAT_TYPE_CHECK
-  if (dims[2] == 0) {
-       mexErrMsgTxt("to_mxArray(real_tensor_t): argument is not a tensor!");
-  }     
-#endif /* EIGEN2MAT_TYPE_CHECK */
-
-     dims[0] = t[0].rows();
-     dims[1] = t[0].cols();
+     if (dims[2] == 0) {
+	  dims[0] = 0;
+	  dims[1] = 0;
+     }
+     else {
+	  dims[0] = t[0].rows();
+	  dims[1] = t[0].cols();
+     }
      const auto mat_size = dims[0] * dims[1];
 
      auto ret = mxCreateNumericArray(dims.size(),
@@ -1014,6 +1018,10 @@ mxArray* eigen2mat::to_mxArray(const e2m::cmplx_sp_matrix_t& m)
      const size_t nzmax = m.nonZeros();
      auto* ret = mxCreateSparse(m.rows(), m.cols(), nzmax, mxCOMPLEX);
 
+     if (m.rows() == 0 || m.cols() == 0) {
+	  return ret;
+     }
+
      auto* values = m.valuePtr();
      auto* ic = m.innerIndexPtr();
      auto* jc = m.outerIndexPtr();
@@ -1086,14 +1094,14 @@ mxArray* eigen2mat::to_mxArray(const e2m::cmplx_tensor_t& t)
      dims.fill(0);
      dims[2] = t.size();
 
-#ifdef EIGEN2MAT_TYPE_CHECK
-  if (dims[2] == 0) {
-       mexErrMsgTxt("to_mxArray(real_tensor_t): argument is not a tensor!");
-  }     
-#endif /* EIGEN2MAT_TYPE_CHECK */
-
-     dims[0] = t[0].rows();
-     dims[1] = t[0].cols();
+     if (dims[2] == 0) {
+	  dims[0] = 0;
+	  dims[1] = 0;
+     }
+     else {
+	  dims[0] = t[0].rows();
+	  dims[1] = t[0].cols();
+     }
      const auto mat_size = dims[0] * dims[1];
 
      auto ret = mxCreateNumericArray(dims.size(),

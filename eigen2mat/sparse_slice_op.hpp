@@ -18,6 +18,9 @@ namespace eigen2mat {
 		    {
 			 return t.coeff(row, col);
 		    }
+
+	       static Index rows(const T& t) { return t.rows(); }
+	       static Index cols(const T& t) { return t.cols(); }
 	  };
 
 	  template<>
@@ -26,10 +29,13 @@ namespace eigen2mat {
 	       typedef double Scalar;
 	       typedef int Index;
 
-	       static Scalar coeff(const double& t, Index /*row*/, Index /*col*/) 
+	       static Scalar coeff(const Scalar& t, Index /*row*/, Index /*col*/) 
 		    {
 			 return t;
 		    }
+
+	       static Index rows(const Scalar& /*t*/) { return 1; }
+	       static Index cols(const Scalar& /*t*/) { return 1; }
 	  };
 	  
 	  template <typename T>
@@ -38,20 +44,18 @@ namespace eigen2mat {
 	       typedef std::complex<T> Scalar;
 	       typedef int Index;
 
-	       static Scalar coeff(const T& t, Index /*row*/, Index /*col*/) 
+	       static Scalar coeff(const Scalar& t, Index /*row*/, Index /*col*/)
 		    {
 			 return t;
 		    }
+
+	       static Index rows(const Scalar& /*t*/) { return 1; }
+	       static Index cols(const Scalar& /*t*/) { return 1; }
 	  };
 	  
-	  template <typename Scalar, typename T>
-	  Scalar coeff(const T& t, typename T::Index row, typename T::Index col)
-	  { return t.coeff(row, col); }
-
-	  template <typename Scalar, typename T>
-	  Scalar coeff(const T& t, int /*row*/, int /*col*/)
-	  { return t; }
      } // namespace internal
+
+     MSVC_IGNORE_WARNINGS(4244)
 
      template <typename lhs_t, typename rhs_t, typename binary_op_t>
      class cwise_binary_op
@@ -82,8 +86,10 @@ namespace eigen2mat {
 			  const binary_op_t& func = binary_op_t())
 	       : lhs_(lhs), rhs_(rhs), functor_(func)
 	       {
-		    e2m_assert((lhs.rows() == rhs.rows()) && 
-			       (lhs.cols() == rhs.cols()));
+		    e2m_assert(
+			 (lhs_traits::rows(lhs) == rhs_traits::rows(rhs)) &&
+			 (lhs_traits::cols(lhs) == rhs_traits::cols(rhs))
+			 );
 	       }
 	  
      private:
@@ -92,6 +98,7 @@ namespace eigen2mat {
 	  const binary_op_t& functor_;
      };
 
+     MSVC_RESTORE_WARNINGS
      CLANG_RESTORE_WARNINGS
 
      struct scalar_sum_op {
