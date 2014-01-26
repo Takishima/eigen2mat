@@ -132,8 +132,8 @@ namespace eigen2mat {
 #ifdef EIGEN2MAT_RANGE_CHECK
 	  assert(row_start < xpr_.rows());
 	  assert(col_start < xpr_.cols());
-	  assert(row_end < xpr_.rows());
-	  assert(col_end < xpr_.cols());
+	  assert(row_end <= xpr_.rows());
+	  assert(col_end <= xpr_.cols());
 #endif /* EIGEN2MAT_RANGE_CHECK */
 
 	  for (Index i(row_start), io(0); i < row_end ; ++i, ++io) {

@@ -4,7 +4,7 @@
 namespace eigen2mat {
      template <typename tensor_t> class tensor_block_t;
 
-     template<typename _Scalar, int _Options, typename _Index> 
+     template<typename matrix_t> 
      class sparse_slice;
 
 } // namespace eigen2mat

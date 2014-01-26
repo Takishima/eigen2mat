@@ -10,10 +10,11 @@
 #ifndef SPARSE_MATRIX_PLUGIN_HPP_INCLUDED
 #define SPARSE_MATRIX_PLUGIN_HPP_INCLUDED
      
-eigen2mat::sparse_slice<Scalar, Options, Index> slice(const std::vector<Index>& row_indices,
-						      const std::vector<Index>& col_indices)
+template <typename index_t>
+eigen2mat::sparse_slice<SparseMatrix<_Scalar, _Options, _Index>> slice(const std::vector<index_t>& row_indices,
+								       const std::vector<index_t>& col_indices)
 {
-     return eigen2mat::sparse_slice<Scalar, Options, Index>(*this, row_indices, col_indices);
+     return eigen2mat::sparse_slice<SparseMatrix<_Scalar, _Options, _Index>>(*this, row_indices, col_indices);
 }
 
 #endif /* SPARSE_MATRIX_PLUGIN_HPP_INCLUDED */

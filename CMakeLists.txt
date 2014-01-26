@@ -8,10 +8,8 @@ project( eigen2mat CXX )
 #set( CMAKE_PREFIX_PATH "D:\\Nguyen\\mex_files\\protection\\eigen-3.2.0" )
 
 # Project defines (can be modified)
-
-add_definitions( -DMYMEX_TYPE_CHECK )
-add_definitions( -DMYMEX_RANGE_CHECK )
-#add_definitions( -DEIGEN2MAT_NO_MATLAB )
+# add_definitions( -DEIGEN2MAT_TYPE_CHECK )
+# add_definitions( -DEIGEN2MAT_RANGE_CHECK )
 
 # ==============================================================================
 #                                                                              #

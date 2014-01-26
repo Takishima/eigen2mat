@@ -116,5 +116,35 @@ int main(int /*argc*/, char** /*argv*/)
      eigen2mat::print(mat);
      eigen2mat::print("====================");
 
+
+     eigen2mat::print("====================");
+     eigen2mat::print("testing slice operator+= methods:");
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice += 11*Eigen::MatrixXcd::Ones(2,2);
+
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice += slice;
+
+     eigen2mat::print(mat);
+     eigen2mat::print("====================");
+     eigen2mat::print("testing slice operator-= methods:");
+
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice -= 11*Eigen::MatrixXcd::Ones(2,2);
+
+     eigen2mat::print(mat);
+     eigen2mat::print("--------------------");
+
+     slice -= slice;
+
+     eigen2mat::print(mat);
+     eigen2mat::print("====================");
+
      return 0;
 }

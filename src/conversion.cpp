@@ -154,7 +154,7 @@ bool eigen2mat::mxArray_to_bool(const mxArray* b)
      const auto M = mxGetM(b);
      const auto N = mxGetN(b);
      
-     if (M != 1 or N != 1) {
+     if (M != 1 || N != 1) {
 	  mexErrMsgTxt("mxArray_to_bool(): value received is not a scalar!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
@@ -174,7 +174,7 @@ double eigen2mat::mxArray_to_double(const mxArray* d)
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
      
-     if (M != 1 or N != 1) {
+     if (M != 1 || N != 1) {
 	  mexErrMsgTxt("mxArray_to_double(): value received is not a scalar!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
@@ -189,7 +189,7 @@ size_t eigen2mat::mxArray_to_idx(const mxArray* d)
 #ifdef EIGEN2MAT_TYPE_CHECK     
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
-     if (M != 1 or N != 1) {
+     if (M != 1 || N != 1) {
 	  mexErrMsgTxt("mxArray_to_idx(): value received is not a scalar!");
      }
 
@@ -221,7 +221,7 @@ int eigen2mat::mxArray_to_int(const mxArray* d)
      const auto M = mxGetM(d);
      const auto N = mxGetN(d);
      
-     if (M != 1 or N != 1) {
+     if (M != 1 || N != 1) {
 	  mexErrMsgTxt("mxArray_to_int(): value received is not a scalar!");
      }
 

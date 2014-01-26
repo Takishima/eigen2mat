@@ -56,6 +56,10 @@ namespace definitions {
      // Matrix blocks
      typedef Eigen::Block<real_matrix_t> real_mblock_t;
      typedef Eigen::Block<cmplx_matrix_t> cmplx_mblock_t;
+     typedef real_matrix_t::RowXpr real_row_t;
+     typedef cmplx_matrix_t::RowXpr cmplx_row_t;
+     typedef real_matrix_t::ConstRowXpr const_real_row_t;
+     typedef cmplx_matrix_t::ConstRowXpr const_cmplx_row_t;
      typedef real_matrix_t::ConstColsBlockXpr const_real_cblock_t;
      typedef cmplx_matrix_t::ConstColsBlockXpr const_cmplx_cblock_t;
      typedef Eigen::Block<const real_matrix_t> const_real_mblock_t;
@@ -68,12 +72,14 @@ namespace definitions {
      // Sparse matrix blocks & slices
      typedef Eigen::Block<real_sp_matrix_t> real_spblock_t;
      typedef Eigen::Block<cmplx_sp_matrix_t> cmplx_spblock_t;
-     typedef sparse_slice<double,   0, int> real_spslice_t;
-     typedef sparse_slice<dcomplex, 0, int> cmplx_spslice_t;
+     typedef sparse_slice<real_sp_matrix_t> real_spslice_t;
+     typedef sparse_slice<cmplx_sp_matrix_t> cmplx_spslice_t;
 
      // Tensors
      typedef std::vector<real_matrix_t> real_tensor_t;
      typedef std::vector<cmplx_matrix_t> cmplx_tensor_t;
+     typedef std::vector<real_sp_matrix_t> real_sp_tensor_t;
+     typedef std::vector<cmplx_sp_matrix_t> cmplx_sp_tensor_t;
 
      // Tensor blocks
      typedef tensor_block_t<real_tensor_t> real_tblock_t;
