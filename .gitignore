@@ -13,7 +13,7 @@
 *.a
 
 # CMake build directories
-build*
+build_*/
 
 # MATLAB MEX files
 *.mexw32

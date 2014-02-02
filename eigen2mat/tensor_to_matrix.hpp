@@ -13,7 +13,12 @@
 #include "eigen2mat/definitions.hpp"
 
 namespace eigen2mat {
-     enum DIR_T {X, Y, Z};
+     //! \brief Type of directions available
+     enum DIR_T {
+	  X, //!< Slicing along the X direction (ie. first component)
+	  Y, //!< Slicing along the Y direction (ie. second component)
+	  Z  //!< Slicing along the Z direction (ie. third component)
+     };
 
      real_matrix_t tensor_to_matrix(const real_tensor_t& t, 
 				    DIR_T dim, 

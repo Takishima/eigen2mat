@@ -1,3 +1,12 @@
+// This file is part of eigen2mat, a simple C++ library to use
+// Eigen with MATLAB's MEX files
+//
+// Copyright (C) 2013 Nguyen Damien <damien.nguyen@a3.epfl.ch>
+//
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 #include "eigen2mat/utils/macros.hpp"
 
 MSVC_IGNORE_WARNINGS(4018 4068 4244 4267 4800)
@@ -12,6 +21,7 @@ CLANG_IGNORE_WARNINGS_FOUR(-Wundefined-reinterpret-cast,	\
 #include "eigen2mat/conversion.hpp"
 
 #include <algorithm>
+#include <type_traits> 
 
 namespace e2m = eigen2mat;
 
@@ -139,7 +149,6 @@ mxArray* to_1Dcell_array_helper(const cell_array_t& t)
      }
      return ret;
 }
-
 
 // =============================================================================
 
@@ -367,7 +376,7 @@ eigen2mat::real_vector_t eigen2mat::mxArray_to_real_vector(const mxArray* v)
 
      const auto id = mxGetClassID(v);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_real_vector(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_real_vector(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -389,7 +398,7 @@ eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray
      }
      const auto id = mxGetClassID(v);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_real_row_vector(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_real_row_vector(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -400,18 +409,7 @@ eigen2mat::real_row_vector_t eigen2mat::mxArray_to_real_row_vector(const mxArray
 
 eigen2mat::real_matrix_t eigen2mat::mxArray_to_real_matrix(const mxArray* m)
 {
-     e2m_assert(m);
-#ifdef EIGEN2MAT_TYPE_CHECK
-     if (mxIsComplex(m)) {
-	  mexWarnMsgTxt("mxArray_to_real_matrix(): argument is complex!");
-     }
-     const auto id = mxGetClassID(m);
-     if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_real_matrix(): data type of v is not double!");
-     }
-#endif /* EIGEN2MAT_TYPE_CHECK */
-
-     return Eigen::Map<real_matrix_t>(mxGetPr(m), mxGetM(m), mxGetN(m));
+     return mxArray_to_real<eigen2mat::real_matrix_t>(m);
 }
 
 // =====================================
@@ -430,7 +428,7 @@ eigen2mat::real_sp_matrix_t eigen2mat::mxArray_to_real_sp_matrix(const mxArray* 
      }
      const auto id = mxGetClassID(m);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_real_matrix(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_real_matrix(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
      auto* values = mxGetPr(m);
@@ -472,7 +470,7 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
      }          
      const auto id = mxGetClassID(t);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_real_tensor(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_real_tensor(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -483,6 +481,14 @@ eigen2mat::real_tensor_t eigen2mat::mxArray_to_real_tensor(const mxArray* t)
 	  std::copy(data, data + mat_size, ret[i].data());
      }
      return ret;
+}
+
+// =====================================
+
+eigen2mat::real_sp_tensor_t
+eigen2mat::mxArray_to_real_sp_tensor(const mxArray* t)
+{
+     return eigen2mat::mxArray_to_real_sp_cell(t);
 }
 
 // =====================================
@@ -524,7 +530,7 @@ eigen2mat::cmplx_vector_t eigen2mat::mxArray_to_cmplx_vector(const mxArray* v)
 
      const auto id = mxGetClassID(v);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_cmplx_vector(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_cmplx_vector(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -554,7 +560,7 @@ eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArr
      }
      const auto id = mxGetClassID(v);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_cmplx_row_vector(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_cmplx_row_vector(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -577,26 +583,7 @@ eigen2mat::cmplx_row_vector_t eigen2mat::mxArray_to_cmplx_row_vector(const mxArr
 
 eigen2mat::cmplx_matrix_t eigen2mat::mxArray_to_cmplx_matrix(const mxArray* m)
 {
-     e2m_assert(m);
-#ifdef EIGEN2MAT_TYPE_CHECK
-     const auto id = mxGetClassID(m);
-     if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_cmplx_matrix(): data type of v is not double!");
-     }
-#endif /* EIGEN2MAT_TYPE_CHECK */
-
-     const auto rows(mxGetM(m));
-     const auto cols(mxGetN(m));
-
-     const auto real(Eigen::Map<real_matrix_t>(mxGetPr(m), rows, cols));
-     auto* imag_data = mxGetPi(m);
-     if (imag_data == NULL) {
-	  return real.cast<dcomplex>();
-     }
-     else {
-	  const auto imag(Eigen::Map<real_matrix_t>(imag_data, rows, cols));
-	  return (real.cast<dcomplex>() + dcomplex(0,1) * imag.cast<dcomplex>());
-     }
+     return mxArray_to_cmplx<eigen2mat::cmplx_matrix_t>(m);
 }
 
 // =====================================
@@ -613,7 +600,7 @@ eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray
      }
      const auto id = mxGetClassID(m);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_cmplx_sp_matrix(): data type of m is not double!");
+	  mexWarnMsgTxt("mxArray_to_cmplx_sp_matrix(): data type of m is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
      auto* real = mxGetPr(m);
@@ -631,7 +618,7 @@ eigen2mat::cmplx_sp_matrix_t eigen2mat::mxArray_to_cmplx_sp_matrix(const mxArray
      triplet_list.reserve(nzmax);
      for (auto col(0UL) ; col < N ; ++col) {
 	  for (auto l(jc[col]) ; l < jc[col+1] ; ++l) {
-	       if (imag == NULLPTR) {
+	       if (imag == nullptr) {
 		    triplet_list.push_back(t_t(ic[l],
 					       col,
 					       dcomplex(real[l],0.0)
@@ -663,7 +650,7 @@ eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 #ifdef EIGEN2MAT_TYPE_CHECK
      const auto id = mxGetClassID(t);
      if (id != mxDOUBLE_CLASS) {
-	  mexErrMsgTxt("mxArray_to_cmplx_tensor(): data type of v is not double!");
+	  mexWarnMsgTxt("mxArray_to_cmplx_tensor(): data type of v is not double!");
      }
 #endif /* EIGEN2MAT_TYPE_CHECK */
 
@@ -686,6 +673,15 @@ eigen2mat::cmplx_tensor_t eigen2mat::mxArray_to_cmplx_tensor(const mxArray* t)
 }
 
 // =====================================
+
+eigen2mat::cmplx_sp_tensor_t
+eigen2mat::mxArray_to_cmplx_sp_tensor(const mxArray* t)
+{
+     return eigen2mat::mxArray_to_cmplx_sp_cell(t);
+}
+
+// =====================================
+
 eigen2mat::cmplx_sp_cell_t eigen2mat::mxArray_to_cmplx_sp_cell(const mxArray* c)
 {
      e2m_assert(c);
@@ -802,42 +798,6 @@ mxArray* eigen2mat::to_mxArray(const e2m::int_array_t& v)
 
 // =============================================================================
 
-mxArray* eigen2mat::to_mxArray(const e2m::real_vector_t& v)
-{
-     auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxREAL);
-     e2m_assert(ret);
-
-     std::copy(v.data(), v.data() + v.rows(), mxGetPr(ret));
-     return ret;
-}
-
-// =====================================
-
-mxArray* eigen2mat::to_mxArray(const e2m::real_row_vector_t& v)
-{
-     auto ret = mxCreateDoubleMatrix(1, v.cols(), mxREAL);
-     e2m_assert(ret);
-
-     std::copy(v.data(), v.data() + v.cols(), mxGetPr(ret));
-     return ret;
-}
-
-// =====================================
-
-mxArray* eigen2mat::to_mxArray(const e2m::real_matrix_t& m)
-{
-     const auto M = m.rows();
-     const auto N = m.cols();
-
-     auto ret = mxCreateDoubleMatrix(M, N, mxREAL);
-     e2m_assert(ret);
-
-     std::copy(m.data(), m.data() + M*N, mxGetPr(ret));
-     return ret;
-}
-
-// =====================================
-
 mxArray* eigen2mat::to_mxArray(const e2m::real_sp_matrix_t& m)
 
 {
@@ -945,73 +905,6 @@ mxArray* eigen2mat::to_mxArray(const e2m::real_sp_cell_t& t)
 }
 
 // =============================================================================
-
-mxArray* eigen2mat::to_mxArray(const e2m::cmplx_vector_t& v)
-{
-     auto ret = mxCreateDoubleMatrix(v.rows(), 1, mxCOMPLEX);
-     e2m_assert(ret);
-
-     auto real = mxGetPr(ret);
-     auto imag = mxGetPi(ret);
-     e2m_assert(real);
-     e2m_assert(imag);
-
-     const auto S = v.size();
-     const auto data = v.data();
-     for (auto i(0) ; i < S ; ++i) {
-	  real[i] = data[i].real();
-	  imag[i] = data[i].imag();
-     }
-     return ret;
-}
-
-// =====================================
-
-mxArray* eigen2mat::to_mxArray(const e2m::cmplx_row_vector_t& v)
-{
-     auto ret = mxCreateDoubleMatrix(1, v.cols(), mxCOMPLEX);
-     e2m_assert(ret);
-
-     auto real = mxGetPr(ret);
-     auto imag = mxGetPi(ret);
-     e2m_assert(real);
-     e2m_assert(imag);
-
-     const auto S = v.size();
-     const auto data = v.data();
-     for (auto i(0) ; i < S ; ++i) {
-	  real[i] = data[i].real();
-	  imag[i] = data[i].imag();
-     }
-     return ret;
-}
-
-// =====================================
-
-mxArray* eigen2mat::to_mxArray(const e2m::cmplx_matrix_t& m)
-{
-     const size_t M = m.rows();
-     const size_t N = m.cols();
-     const size_t S = m.rows() * m.cols();
-
-     auto ret = mxCreateDoubleMatrix(M, N, mxCOMPLEX);
-     e2m_assert(ret);
-
-     auto real = mxGetPr(ret);
-     auto imag = mxGetPi(ret);
-     e2m_assert(real);
-     e2m_assert(imag);
-
-     const auto data = m.data();
-     for (auto i(0UL) ; i < S ;++i) {
-	  real[i] = data[i].real();
-	  imag[i] = data[i].imag();
-     }
-
-     return ret;
-}
-
-// =====================================
 
 mxArray* eigen2mat::to_mxArray(const e2m::cmplx_sp_matrix_t& m)
 {

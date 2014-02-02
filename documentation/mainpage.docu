@@ -1,0 +1,23 @@
+********************************************************************************
+*		Part of the documentation for eigen2mat    		       *
+*			       	  by					       *
+*		             Nguyen Damien      			       *
+*									       *
+*		             January 2014        			       * 
+********************************************************************************
+
+/*! \mainpage
+
+\section Introduction
+Welcome to the documentation of \e eigen2mat. It has been developped as a
+lightweight interface library between MATLAB's MEX files and Eigen C++.
+
+\section related_pages Related pages
+You may want to have a look here for more information on specific topics:
+   \li\ref build
+   \li\ref license
+   \li\ref requirements
+
+\author Nguyen Damien (damien.nguyen@epfl.ch)
+\date January 2014
+*/

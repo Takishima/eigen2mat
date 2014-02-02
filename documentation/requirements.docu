@@ -1,0 +1,38 @@
+********************************************************************************
+*		Part of the documentation for eigen2mat    		       *
+*			       	  by					       *
+*		             Nguyen Damien      			       *
+*									       *
+*		             January 2014        			       * 
+********************************************************************************
+
+/*! \page requirements Requirements
+
+\section Compiler
+
+This project relies on some of the the new C++11 standards (like auto). However,
+in order to be compatible with a maxium number of compilers, the use of C++11
+features has been kept to a minimum.
+
+The code has been developped using Clang 3.x and has been tested to compile
+with MSVC2010. Compatibility with GCC should not be a problem.
+
+\note Newer versions of the above compilers should work properly too.
+
+
+\section Eigen
+
+As its name implies, this library requires Eigen to work properly. Eigen is a
+lightweight C++ library for linear algebra. 
+
+This project requires Eigen 3.2 or newer. You can get the latest version
+at the following address: http://eigen.tuxfamily.org/
+
+
+\section MATLAB
+
+Another important requirements of this library is to have MATLAB installed. eigen2mat
+is known to compile properly under MATLAB R2012b and newer. However, older versions
+might also work.
+
+*/

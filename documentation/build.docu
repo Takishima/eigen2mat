@@ -1,0 +1,39 @@
+********************************************************************************
+*		Part of the documentation for eigen2mat    		       *
+*			       	  by					       *
+*		             Nguyen Damien      			       *
+*									       *
+*		             January 2014        			       * 
+********************************************************************************
+
+/*! \page build Building
+
+\section quick_start Quick start
+
+As eigen2mat requires MATLAB and Eigen, you will need to tell CMake where to
+find those, if the automatic detection fails.
+
+This can easily be done on the command line or CMake's GUI with the following
+variables:
+\li \c MATLAB_ROOT Path to the root folder of MATLAB (C:\\Program Files\\MATLAB\\R2012b)
+for example
+
+\li \c EIGEN3_INCLUDE_DIR Path to the folder containing the \c Eigen directory.
+This folder should contain the Core, SparseCore and other main Eigen headers.
+
+\section conf_description Project configuration
+
+Here's a description of \c \#defines directives that are used internally by 
+\c eigen2mat:
+
+ \c \b EIGEN2MAT_RANGE_CHECK \n
+
+This directive turns on dynamic range checking throughout the code. 
+Can be omited to improve performance. 
+
+ \c \b EIGEN2MAT_TYPE_CHECK \n
+
+This directory turns on some warnings when converting between types.
+
+
+*/

@@ -12,12 +12,6 @@
 
 #include <cstddef>
 
-#ifdef WITH_CPP11
-#  define NULLPTR nullptr
-#else
-#  define NULLPTR NULL
-#endif // WITH_CPP11
-
 #include "eigen2mat/utils/Eigen_Core"
 #include "eigen2mat/utils/Eigen_Sparse"
 #include "eigen2mat/utils/forward_declarations.hpp"

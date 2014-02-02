@@ -12,8 +12,6 @@
 
 #include "eigen2mat/utils/forward_declarations.hpp"
 
-#include "eigen2mat/utils/include_mex"
-
 namespace eigen2mat {
 
      CLANG_IGNORE_WARNINGS_TWO(-Wshorten-64-to-32, -Wpadded)

@@ -1,0 +1,17 @@
+********************************************************************************
+*		Part of the documentation for eigen2mat    		       *
+*			       	  by					       *
+*		             Nguyen Damien      			       *
+*									       *
+*		             January 2014        			       * 
+********************************************************************************
+
+/*! \page license Licences
+
+\section eigen2mat_license eigen2mat license
+
+eigen2mat is licensed uder the Mozilla Public License Version 2.0
+
+\verbinclude license.txt
+
+*/

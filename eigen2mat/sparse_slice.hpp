@@ -28,6 +28,12 @@ MSVC_IGNORE_WARNINGS(4267)
 CLANG_IGNORE_WARNINGS_TWO(-Wshorten-64-to-32,-Wsign-conversion)
 
 namespace eigen2mat {
+     /*!
+      * \brief Class representing a slice of a matrix
+      *
+      * This class purpose is to represent a slice of a matrix (typically an
+      * Eigen::SparseMatrix).
+      */
      template<typename matrix_t>
      class sparse_slice
      {
@@ -41,51 +47,142 @@ namespace eigen2mat {
 
 	  typedef sparse_slice<matrix_t> self_t;
 
+	  /*!
+	   * \brief Constructor
+	   * 
+	   * Constructs a slice of a matrix so that when we acces the slice,
+	   * as follows: s.coeff(i, j), we are in fact accessing the underlying
+	   * matrix as: m.coeff(row_indices[i], col_indices[j]).
+	   * 
+	   * \param m matrix to take a slice of
+	   * \param row_indices array of row indices
+	   * \param col_indices array of column indices
+	   */
 	  template <typename index_t>
 	  sparse_slice(matrix_t& m,
 		       std::vector<index_t> row_indices,
 		       std::vector<index_t> col_indices);
+	  /*!
+	   * \brief Constructor
+	   * 
+	   * Convenience overload in the case of a single row index.
+	   */
 	  template <typename index_t>
 	  sparse_slice(matrix_t& m,
 		       index_t row,
 		       std::vector<index_t> col_indices);
+	  /*!
+	   * \brief Constructor
+	   * 
+	   * Convenience overload in the case of a single column index.
+	   */
 	  template <typename index_t>
 	  sparse_slice(matrix_t& m,
 		       std::vector<index_t> row_indices,
 		       index_t col);
+	  /*!
+	   * \brief Constructor
+	   * 
+	   * Convenience overload in the case of single row & column indices.
+	   */
 	  template <typename index_t>
 	  sparse_slice(matrix_t& m, index_t row, index_t col);
-	  
+
+	  /*!
+	   * \brief Accessor to the underlying matrix
+	   * 
+	   * \return Number of rows of the underlying matrix
+	   */
 	  inline Index matrix_rows() const { return row_size_; }
+	  /*!
+	   * \brief Accessor to the underlying matrix
+	   * 
+	   * \return Number of columns of the underlying matrix
+	   */
 	  inline Index matrix_cols() const { return col_size_; }
 
+	  /*!
+	   * \brief Accessor to the underlying matrix
+	   * 
+	   * \return Inner size of matrix
+	   */
 	  inline Index innerSize() const
 	       {return matrix_t::IsRowMajor ? col_size_ : row_size_;}
+	  /*!
+	   * \brief Accessor to the underlying matrix
+	   * 
+	   * \return Outer size of matrix
+	   */
 	  inline Index outerSize() const
 	       {return matrix_t::IsRowMajor ? row_size_ : col_size_;}
 
+	  /*!
+	   * \brief Accessor
+	   * 
+	   * \return Number of rows of the slice
+	   */
 	  inline Index rows() const
 	       { return row_indices_.size(); }
+	  /*!
+	   * \brief Accessor
+	   * 
+	   * \return Number of columns of the slice
+	   */
 	  inline Index cols() const
 	       { return col_indices_.size(); }
 
+	  /*!
+	   * \brief Accessor
+	   * 
+	   * \return Inner size of slice
+	   */
 	  inline Index innerSliceSize() const
 	       {return matrix_t::IsRowMajor ? col_indices_.size() : row_indices_.size();}
+	  /*!
+	   * \brief Accessor
+	   * 
+	   * \return Outer size of slice
+	   */
 	  inline Index outerSliceSize() const
 	       {return matrix_t::IsRowMajor ? row_indices_.size() : col_indices_.size();}
 	  
+	  /*!
+	   * \brief Function for component-wise operations
+	   * 
+	   * Simulate Eigen's array() methods
+	   * 
+	   * \return expression that can be uesd with the sparse_slice operators
+	   */
 	  expression_wrapper_t<self_t> array()
 	       { return expression_wrapper_t<self_t>(*this); }
+	  /*!
+	   * \brief Function for component-wise operations
+	   * 
+	   * Const overloads
+	   */
 	  expression_wrapper_t<const self_t> array() const
 	       { return expression_wrapper_t<const self_t>(*this); }
 
-
+	  /*!
+	   * \brief Coefficient accessor
+	   * 
+	   * \param row Index of row (inside the slice)
+	   * \param col Index of column (inside the slice)
+	   * \return Element at given row & column
+	   */
 	  Scalar coeff(Index row, Index col) const
 	       {
 		    assert(mat_);
 		    return mat_->coeff(row_indices_[row], col_indices_[col]);
 	       }
 
+	  /*!
+	   * \brief Coefficient accessor (mutable version)
+	   * 
+	   * \param row Index of row (inside the slice)
+	   * \param col Index of column (inside the slice)
+	   * \return Element at given row & column
+	   */
 	  Scalar& coeffRef(Index row, Index col) const
 	       {
 		    assert(mat_);
@@ -93,22 +190,38 @@ namespace eigen2mat {
 	       }
 
 
-	  /** For Eigen::SparseMatrix */
-	  self_t& operator= (const matrix_t& rhs)
+	  /*!
+	   * \brief Assignment operator for Eigen::SparseMatrixBase
+	   * 
+	   * \param rhs matrix to assign
+	   * \return self_t& modified slice instance
+	   */
+	  template <typename Derived>
+	  self_t& operator= (const Eigen::SparseMatrixBase<Derived>& rhs)
 	       {
-		    assign_helper_(rhs);
+		    assign_helper_(rhs.eval());
 		    return *this;
 	       }
 
-	  /** For Eigen::Matrix */
+	  /*!
+	   * \brief Assignment operator for Eigen::DenseBase (ie. normal Matrices & expressions)
+	   * 
+	   * \param rhs matrix or expression to assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename Derived>
 	  self_t& operator= (const Eigen::DenseBase<Derived>& rhs)
 	       {
-		    assign_helper_(rhs);
+		    assign_helper_(rhs.eval());
 		    return *this;
 	       }
 
-	  /** For Cwise operations with other slices */
+	  /*!
+	   * \brief Assignment operator for component-wise wrapper class
+	   * 
+	   * \param op operator wrapper class to assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename lhs_t, typename rhs_t, typename binary_op_t>
 	  self_t& operator= (const cwise_binary_op<lhs_t, rhs_t, binary_op_t>& op)
 	       {
@@ -116,7 +229,12 @@ namespace eigen2mat {
 		    return *this;
 	       }
 
-	  /** For other slices */
+	  /*!
+	   * \brief Assignment operator for other slices
+	   * 
+	   * \param other slice to assign
+	   * \return self_t& modified slice instance
+	   */
 	  self_t& operator= (const self_t& other)
 	       {
 		    assign_helper_(other);
@@ -125,7 +243,26 @@ namespace eigen2mat {
 
 	  // =====================================
 
-	  /** For Eigen::Matrix */
+	  /*!
+	   * \brief Addition assignment operator for Eigen::SparseMatrixBase
+	   * 
+	   * \param rhs matrix to add-assign
+	   * \return self_t& modified slice instance
+	   */
+	  template <typename Derived>
+	  self_t& operator+= (const Eigen::SparseMatrixBase<Derived>& rhs)
+	       {
+		    apply_<Eigen::DenseBase<Derived>,
+			   internal::scalar_sum_assign_op>(rhs);
+		    return *this;
+	       }
+
+	  /*!
+	   * \brief Addition assignment operator for Eigen::DenseBase
+	   * 
+	   * \param rhs matrix to add-assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename Derived>
 	  self_t& operator+= (const Eigen::DenseBase<Derived>& rhs)
 	       {
@@ -134,7 +271,12 @@ namespace eigen2mat {
 		    return *this;
 	       }
 
-	  /** For Cwise operations with other slices */
+	  /*!
+	   * \brief Addition assignment operator for component-wise wrappers
+	   * 
+	   * \param op operator wrapper to add-assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename lhs_t, typename rhs_t, typename binary_op_t>
 	  self_t& operator+= (const cwise_binary_op<lhs_t, rhs_t, binary_op_t>& op)
 	       {
@@ -143,7 +285,12 @@ namespace eigen2mat {
 		    return *this;
 	       }
 
-	  /** For other slices */
+	  /*!
+	   * \brief Addition assignment operator other slices
+	   * 
+	   * \param other slice to add-assign
+	   * \return self_t& modified slice instance
+	   */
 	  self_t& operator+= (const self_t& other)
 	       {
 		    apply_<self_t, internal::scalar_sum_assign_op>(other);
@@ -152,7 +299,27 @@ namespace eigen2mat {
 
 	  // =====================================
 
-	  /** For Eigen::Matrix */
+	  /*!
+	   * \brief Subtraction assignment operator for Eigen::SparseMatrixBase
+	   * 
+	   * \param rhs matrix to subtract-assign
+	   * \return self_t& modified slice instance
+	   */
+	  template <typename Derived>
+	  self_t& operator-= (const Eigen::SparseMatrixBase<Derived>& rhs)
+	       {
+		    apply_<Eigen::DenseBase<Derived>,
+			   internal::scalar_diff_assign_op>(rhs);
+		    return *this;
+	       }
+
+
+	  /*!
+	   * \brief Subtraction assignment operator for Eigen::DenseBase
+	   * 
+	   * \param rhs matrix to subtract-assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename Derived>
 	  self_t& operator-= (const Eigen::DenseBase<Derived>& rhs)
 	       {
@@ -161,7 +328,12 @@ namespace eigen2mat {
 		    return *this;
 	       }
 
-	  /** For Cwise operations with other slices */
+	  /*!
+	   * \brief Subtraction assignment operator for component-wise wrapper
+	   * 
+	   * \param op component-wise operator wrapper to subtract-assign
+	   * \return self_t& modified slice instance
+	   */
 	  template <typename lhs_t, typename rhs_t, typename binary_op_t>
 	  self_t& operator-= (const cwise_binary_op<lhs_t, rhs_t, binary_op_t>& op)
 	       {
@@ -170,7 +342,12 @@ namespace eigen2mat {
 		    return *this;
 	       }
 
-	  /** For other slices */
+	  /*!
+	   * \brief Subtraction assignment operator for other slices
+	   * 
+	   * \param other slice to subtract-assign
+	   * \return self_t& modified slice instance
+	   */
 	  self_t& operator-= (const self_t& other)
 	       {
 		    apply_<self_t, internal::scalar_diff_assign_op>(other);
@@ -179,12 +356,29 @@ namespace eigen2mat {
 
 	  // =====================================
 
+	  /*!
+	   * \brief Streaming operator for initialisation
+	   * 
+	   * Streaming operator for comma separated initialisation from a scalar.
+	   * 
+	   * \param s first scalar to assign to slice
+	   * \return comme initializer proxy
+	   */
 	  comma_initializer<sparse_slice> operator<< (
 	       const Scalar& s)
 	       {
 		    return comma_initializer<sparse_slice>(*this, s);
 	       }
 
+	  /*!
+	   * \brief Streaming operator for initialisation
+	   * 
+	   * Streaming operator for comma separated initialisation from an Eigen
+	   * matrix or expression.
+	   * 
+	   * \param other first matrix/expression to assign to slice
+	   * \return comme initializer proxy
+	   */
 	  template<typename OtherDerived>
 	  comma_initializer<sparse_slice> operator<< (
 	       const Eigen::DenseBase<OtherDerived>& other)
@@ -192,24 +386,35 @@ namespace eigen2mat {
 		    return comma_initializer<sparse_slice>(*this, other);
 	       }
      private:
+	  /*!
+	   * \brief Helper function for assignment
+	   * 
+	   * \param other Item to assign to the current slice
+	   */
 	  template <typename T>
 	  void assign_helper_(const T& other);
 
+	  /*!
+	   * \brief Helper function to apply a binary operator coefficient-wise
+	   *        to a slice.
+	   * 
+	   * \param other Object for the RHS of the binary operator
+	   * \param f binary functor
+	   */
 	  template <typename T, typename functor_t>
 	  void apply_(const T& other, functor_t f = functor_t());
-
+	  
+	  //! \brief Helper function for some initialisation checks
 	  void init_check_() const;
 
+	  
+	  matrix_t* mat_; //!< Underlying matrix
+	  
+	  const Index row_size_; //!< Number of rows of underlying matrix
+	  const Index col_size_; //!< Number of columns of underlying matrix
 
-	  matrix_t* mat_;
-
-	  // const typename XprType::Nested mat_;
-
-	  const Index row_size_;
-	  const Index col_size_;
-
-	  const std::vector<Index> row_indices_;
-	  const std::vector<Index> col_indices_;
+	  const std::vector<Index> row_indices_; //!< List of row indices
+	  const std::vector<Index> col_indices_; //!< List of column indices
      };
 
      MSVC_IGNORE_WARNINGS(4267)
