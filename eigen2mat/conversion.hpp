@@ -273,6 +273,8 @@ namespace eigen2mat {
 } // namespace eigen2mat
 
 #include "details/eigen_expressions_conversions.hpp"
-#include "details/generic_conversions.hpp"
+
+// This is still experimental...
+// #include "details/generic_conversions.hpp"
 
 #endif /* E2M_CONVERSION_HPP_INCLUDED */
