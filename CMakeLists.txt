@@ -21,7 +21,7 @@ project( eigen2mat CXX )
 set( CMAKE_CXX_FLAGS "-std=c++11" )
 
 set( CLANG_CXXFLAGS "-Weverything -Wno-c++98-compat -Wno-missing-prototypes" )
-set( CLANG_CXXFLAGS "${CLANG_CXXFLAGS} -stdlib=libc++" )
+set( CLANG_CXXFLAGS "${CLANG_CXXFLAGS} -stdlib=libc++ -fPIC" )
 
 set ( GCC_CXXFLAGS "-Wall -Wextra -ansi -pedantic -Wshadow -Wfloat-equal" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wctor-dtor-privacy -Wnon-virtual-dtor" )
@@ -31,7 +31,7 @@ set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wpointer-arith -Wcast-qual -Wcast-align" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wswitch-enum -Wundef -Wredundant-decls" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wstrict-null-sentinel -Wwrite-strings" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wunreachable-code -Wno-unknown-pragmas" )
-set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Weffc++" )
+set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Weffc++ -fPIC" )
 
 set( MSVC_CXXFLAGS "/W3" )
 
@@ -99,7 +99,7 @@ message(STATUS "C++ compiler version: ${COMPILER_VERSION} [${CMAKE_CXX_COMPILER}
 
 if( NOT MSVC )
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -O0")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -O3")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -O2")
 else( NOT MSVC )
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od /Ob0")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG /O2 /Ot /GL /Oi")

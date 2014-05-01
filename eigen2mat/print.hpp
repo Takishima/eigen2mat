@@ -107,7 +107,8 @@ namespace eigen2mat {
 	  CLANG_IGNORE_WARNINGS_TWO(-Wsign-conversion, -Wsign-compare)
 	  for (auto i(0UL); i < xpr.rows(); ++i) {
 	       for (auto j(0UL); j < xpr.cols(); ++j) {
-		    print(xpr(i,j));
+		    print(xpr(i,j)); 
+		    mexPrintf(" ");
 	       }
 	       print("");
 	  }

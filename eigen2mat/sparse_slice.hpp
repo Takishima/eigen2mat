@@ -88,6 +88,8 @@ namespace eigen2mat {
 	  template <typename index_t>
 	  sparse_slice(matrix_t& m, index_t row, index_t col);
 
+	  sparse_slice(const self_t&) = default;
+
 	  /*!
 	   * \brief Accessor to the underlying matrix
 	   * 

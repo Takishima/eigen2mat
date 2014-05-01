@@ -30,7 +30,7 @@ void eigen2mat::print(const std::string& s)
 
 void eigen2mat::print(double d) 
 {
-     print("%g", d);
+     print("%.12g", d);
 }
 
 // =====================================

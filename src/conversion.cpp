@@ -36,6 +36,9 @@ T mxArray_to_single_helper(const mxArray* a)
      if (M != 1 || N != 1) {
 	  mexErrMsgTxt("Input is not a scalar");
      }
+     else if (M == 0 || N == 0) {
+	  mexErrMsgTxt("Input is empty!");
+     }
 
      mxClassID id = mxGetClassID(a);
      T r(0);

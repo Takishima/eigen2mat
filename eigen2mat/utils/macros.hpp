@@ -68,6 +68,42 @@
 #  define CLANG_RESTORE_WARNINGS
 #endif /* __clang__ */
 
+#ifdef __GNUC__
+#  define _GCC_DO_PRAGMA(x) _Pragma (#x) 
+#  define _GCC_IGNORE_ONE(w) _GCC_DO_PRAGMA(GCC diagnostic ignored #w)
+
+#  define GCC_IGNORE_WARNINGS_ONE(w1)		\
+     _Pragma("GCC diagnostic push")		\
+     _GCC_IGNORE_ONE(w1)			
+#  define GCC_IGNORE_WARNINGS_TWO(w1, w2)	\
+     GCC_IGNORE_WARNINGS_ONE(w1)		\
+     _GCC_IGNORE_ONE(w2)			
+#  define GCC_IGNORE_WARNINGS_THREE(w1, w2, w3)	\
+     GCC_IGNORE_WARNINGS_TWO(w1, w2)			\
+     _GCC_IGNORE_ONE(w3)
+#  define GCC_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)	\
+     GCC_IGNORE_WARNINGS_THREE(w1, w2, w3)		\
+     _GCC_IGNORE_ONE(w4)			
+#  define GCC_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)	\
+     GCC_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)			\
+     _GCC_IGNORE_ONE(w5)			
+#  define GCC_IGNORE_WARNINGS_SIX(w1, w2, w3, w4, w5, w6)		\
+     GCC_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)			\
+     _GCC_IGNORE_ONE(w6)			
+
+#  define GCC_RESTORE_WARNINGS _GCC_DO_PRAGMA(GCC diagnostic pop)
+#else
+#  define _GCC_DO_PRAGMA(x) 
+#  define _GCC_IGNORE_ONE(w)
+#  define GCC_IGNORE_WARNINGS_ONE(w1)
+#  define GCC_IGNORE_WARNINGS_TWO(w1, w2)
+#  define GCC_IGNORE_WARNINGS_THREE(w1, w2, w3)
+#  define GCC_IGNORE_WARNINGS_FOUR(w1, w2, w3, w4)
+#  define GCC_IGNORE_WARNINGS_FIVE(w1, w2, w3, w4, w5)
+#  define GCC_IGNORE_WARNINGS_SIX(w1, w2, w3, w4, w5, w6)
+#  define GCC_RESTORE_WARNINGS
+#endif /* __GNUC__ */
+
 #ifdef __clang__
 #  pragma clang diagnostic pop
 #endif /* __clang__ */

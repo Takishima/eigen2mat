@@ -20,6 +20,7 @@
 
 MSVC_IGNORE_WARNINGS(4244)
 CLANG_IGNORE_WARNINGS_TWO(-Wpadded,-Wshorten-64-to-32)
+GCC_IGNORE_WARNINGS_ONE(-Weffc++)
 
 namespace eigen2mat {
      template <typename XprType>
@@ -45,6 +46,7 @@ namespace eigen2mat {
 		    // m_xpr.block(0, 0, other.rows(), other.cols()) = other;
 	       }
 
+	  comma_initializer(const comma_initializer&) = default;
 
 	  inline ~comma_initializer()
 	       {
@@ -148,6 +150,7 @@ namespace eigen2mat {
      }
 } // namespace eigen2mat
 
+GCC_RESTORE_WARNINGS
 CLANG_RESTORE_WARNINGS
 MSVC_RESTORE_WARNINGS
 

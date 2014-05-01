@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef CONVERSION_HPP_INCLUDED
-#define CONVERSION_HPP_INCLUDED
+#ifndef E2M_CONVERSION_HPP_INCLUDED
+#define E2M_CONVERSION_HPP_INCLUDED
 
 #include "eigen2mat/definitions.hpp"
 #include "eigen2mat/utils/include_mex"
@@ -166,6 +166,7 @@ namespace eigen2mat {
       */
      cmplx_sp_cell_t mxArray_to_cmplx_sp_cell(const mxArray* c);
 
+     // ========================================================================
      // eigen2mat to MATLAB
      /*!
       * \brief Convert \c bool to mxArray
@@ -272,5 +273,6 @@ namespace eigen2mat {
 } // namespace eigen2mat
 
 #include "details/eigen_expressions_conversions.hpp"
+#include "details/generic_conversions.hpp"
 
-#endif /* CONVERSION_HPP_INCLUDED */
+#endif /* E2M_CONVERSION_HPP_INCLUDED */
