@@ -105,6 +105,7 @@ namespace eigen2mat {
      void print(const Eigen::DenseBase<Derived>& xpr)
      {
 	  CLANG_IGNORE_WARNINGS_TWO(-Wsign-conversion, -Wsign-compare)
+	  GCC_IGNORE_WARNINGS_ONE(-Wsign-compare)
 	  for (auto i(0UL); i < xpr.rows(); ++i) {
 	       for (auto j(0UL); j < xpr.cols(); ++j) {
 		    print(xpr(i,j)); 
@@ -112,6 +113,7 @@ namespace eigen2mat {
 	       }
 	       print("");
 	  }
+	  GCC_RESTORE_WARNINGS
 	  CLANG_RESTORE_WARNINGS
      }
 
