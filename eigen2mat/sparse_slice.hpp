@@ -26,6 +26,7 @@
 
 MSVC_IGNORE_WARNINGS(4267)
 CLANG_IGNORE_WARNINGS_TWO(-Wshorten-64-to-32,-Wsign-conversion)
+GCC_IGNORE_WARNINGS_ONE(-Wconversion)
 
 namespace eigen2mat {
      /*!
@@ -548,6 +549,7 @@ namespace eigen2mat {
 
 } // namespace eigen2mat
 
+GCC_RESTORE_WARNINGS
 CLANG_RESTORE_WARNINGS
 MSVC_RESTORE_WARNINGS
 

@@ -35,8 +35,8 @@ void print(const Eigen::SparseMatrix<eigen2mat::dcomplex, 1>& m)
 
 int main(int /*argc*/, char** /*argv*/)
 {
-     typedef Eigen::VectorXd real_vector_t;
-     typedef Eigen::MatrixXd real_matrix_t;
+     // typedef Eigen::VectorXd real_vector_t;
+     // typedef Eigen::MatrixXd real_matrix_t;
      eigen2mat::cmplx_sp_matrix_t mat(10,7);
      // Eigen::SparseMatrix<eigen2mat::dcomplex, 1> mat(10,7);
      using eigen2mat::dcomplex;

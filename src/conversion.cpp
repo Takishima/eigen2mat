@@ -16,6 +16,8 @@ CLANG_IGNORE_WARNINGS_FOUR(-Wundefined-reinterpret-cast,	\
 			   -Wsign-conversion,			\
 			   -Wc++98-compat-pedantic)
 
+GCC_IGNORE_WARNINGS_ONE(-Wconversion)
+
 // =============================================================================
 
 #include "eigen2mat/conversion.hpp"
@@ -1046,6 +1048,7 @@ eigen2mat::dim_array_t eigen2mat::get_dimensions(const mxArray* a)
 
 // =====================================
 
+GCC_RESTORE_WARNINGS
 CLANG_RESTORE_WARNINGS
 MSVC_RESTORE_WARNINGS
 

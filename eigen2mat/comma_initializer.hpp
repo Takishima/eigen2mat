@@ -20,7 +20,7 @@
 
 MSVC_IGNORE_WARNINGS(4244)
 CLANG_IGNORE_WARNINGS_TWO(-Wpadded,-Wshorten-64-to-32)
-GCC_IGNORE_WARNINGS_ONE(-Weffc++)
+GCC_IGNORE_WARNINGS_TWO(-Weffc++,-Wconversion)
 
 namespace eigen2mat {
      template <typename XprType>
