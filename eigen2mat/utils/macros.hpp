@@ -68,7 +68,7 @@
 #  define CLANG_RESTORE_WARNINGS
 #endif /* __clang__ */
 
-#ifdef __GNUC__
+#if (defined __GNUC__) && !(defined __clang__)
 #  define _GCC_DO_PRAGMA(x) _Pragma (#x) 
 #  define _GCC_IGNORE_ONE(w) _GCC_DO_PRAGMA(GCC diagnostic ignored #w)
 
