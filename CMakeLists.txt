@@ -18,10 +18,9 @@ project( eigen2mat CXX )
 # ==============================================================================
 
 # Compiler flags
-set( CMAKE_CXX_FLAGS "-std=c++11" )
 
 set( CLANG_CXXFLAGS "-Weverything -Wno-c++98-compat -Wno-missing-prototypes" )
-set( CLANG_CXXFLAGS "${CLANG_CXXFLAGS} -stdlib=libc++ -fPIC" )
+set( CLANG_CXXFLAGS "${CLANG_CXXFLAGS} -stdlib=libc++ -std=c++11 -fPIC" )
 
 set ( GCC_CXXFLAGS "-Wall -Wextra -ansi -pedantic -Wshadow -Wfloat-equal" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wctor-dtor-privacy -Wnon-virtual-dtor" )
@@ -31,7 +30,7 @@ set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wpointer-arith -Wcast-qual -Wcast-align" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wswitch-enum -Wundef -Wredundant-decls" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wstrict-null-sentinel -Wwrite-strings" )
 set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Wunreachable-code -Wno-unknown-pragmas" )
-set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Weffc++ -fPIC" )
+set ( GCC_CXXFLAGS "${GCC_CXXFLAGS} -Weffc++ -std=c++11 -fPIC" )
 
 set( MSVC_CXXFLAGS "/W3" )
 
@@ -196,6 +195,17 @@ add_custom_command(
   TARGET eigen2mat_static
   PRE_LINK
   COMMAND echo "NOTE: linking library in ${CMAKE_BUILD_TYPE} mode"
+  )
+
+install(
+  TARGETS eigen2mat_static
+  DESTINATION lib
+  )
+install( DIRECTORY ${CMAKE_SOURCE_DIR}/eigen2mat
+  DESTINATION include
+  )
+install( FILES ${CMAKE_SOURCE_DIR}/signature_of_eigen2mat_library
+  DESTINATION include
   )
 
 add_executable( mytest test/test.cpp )
