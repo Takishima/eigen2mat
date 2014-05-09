@@ -134,9 +134,9 @@ endif()
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
-find_package( Matlab2 REQUIRED )
+find_package( MATLAB REQUIRED )
 if ( MATLAB_FOUND )
-  message( STATUS "MATLAB root: ${MATLAB_ROOT}" )
+  message( STATUS "MATLAB dir:     ${MATLAB_DIR}" )
   message( STATUS "MATLAB includes: ${MATLAB_INCLUDE_DIR}" )
   include_directories( ${MATLAB_INCLUDE_DIR} )
 else( MATLAB_FOUND )
