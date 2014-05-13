@@ -191,6 +191,20 @@ set_target_properties(
   OUTPUT_NAME_RELEASE "eigen2mat"
   )
 
+add_library( eigen2mat_shared SHARED
+  src/conversion.cpp
+  src/print.cpp
+  src/tensor_to_matrix.cpp
+  )
+target_link_libraries( eigen2mat_shared ${MATLAB_LIBRARIES} )
+set_target_properties(
+  eigen2mat_shared
+  PROPERTIES 
+  OUTPUT_NAME "eigen2matu"
+  OUTPUT_NAME_DEBUG "eigen2matd"
+  OUTPUT_NAME_RELEASE "eigen2mat"
+  )
+
 add_custom_command(
   TARGET eigen2mat_static
   PRE_LINK
@@ -198,7 +212,7 @@ add_custom_command(
   )
 
 install(
-  TARGETS eigen2mat_static
+  TARGETS eigen2mat_static eigen2mat_shared
   DESTINATION lib
   )
 install( DIRECTORY ${CMAKE_SOURCE_DIR}/eigen2mat
