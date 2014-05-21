@@ -154,8 +154,11 @@ include_directories( ${eigen2mat_SOURCE_DIR}/ )
 
 # ==============================================================================
 # Add doxygen target
-find_package( Doxygen )
-if( DOXYGEN_FOUND )
+
+option (ENABLE_DOC "Create 'doc' target to build documentation (requires Doxygen)" OFF)
+
+if (ENABLE_DOC)
+  find_package( Doxygen REQUIRED )
   set( DOC_OUTPUT_DIR "documentation" )
   configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in 
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
@@ -169,8 +172,7 @@ if( DOXYGEN_FOUND )
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Cleaning documentation" VERBATIM
     )
-endif( DOXYGEN_FOUND )
-
+endif (ENABLE_DOC)
 # ==============================================================================
 
 string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
