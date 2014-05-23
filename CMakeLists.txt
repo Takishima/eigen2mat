@@ -125,6 +125,19 @@ endif()
 
 # ==============================================================================
 
+option (STATIC_STDLINK "Link to static C/C++ standard libraries (GCC only for now...)" OFF)
+
+if (STATIC_STDLINK)
+  if (IS_GCC)
+    set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+  else (IS_GCC)
+    message (WARNING "Cannot enable STATIC_STDLINK without GCC")
+    set( STATIC_STDLINK OFF)
+  endif (IS_GCC)
+endif (STATIC_STDLINK)
+
+# ==============================================================================
+
 # Find out which git branch we are in
 # execute_process( COMMAND git rev-parse --abbrev-ref HEAD
 #   OUTPUT_VARIABLE git_branch_name 
